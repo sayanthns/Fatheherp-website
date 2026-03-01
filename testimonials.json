@@ -1,0 +1,26 @@
+[
+  {
+    "name": "Ahmed Al-Dosari",
+    "role": "Owner",
+    "company": "Al-Dosari Trading Co.",
+    "quote": "Fateh ERP transformed how we manage our trading operations. ZATCA compliance was seamless, and the support team is responsive and knowledgeable. We went live in just two weeks.",
+    "rating": 5,
+    "id": "1772403891915"
+  },
+  {
+    "name": "Fatima Al-Rashid",
+    "role": "Finance Manager",
+    "company": "Gulf Goods Trading",
+    "quote": "We migrated from spreadsheets to Fateh ERP in just 3 weeks. The multi-warehouse inventory tracking alone saved us hours every day. Best investment we've made for our business.\n\n",
+    "rating": 5,
+    "id": "1772403931387"
+  },
+  {
+    "name": "Mohammed Al-Qahtani",
+    "role": "Operations Director",
+    "company": " Al-Qahtani Group",
+    "quote": "Managing procurement across multiple suppliers used to be a nightmare. Fateh ERP's purchase management and supplier tracking gave us complete visibility and control over costs.\n\n",
+    "rating": 5,
+    "id": "1772403965092"
+  }
+]

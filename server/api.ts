@@ -16,6 +16,8 @@ apiRouter.use(express.json());
 const LEADS_FILE_PATH = path.join(__dirname, "..", "leads.json");
 const SETTINGS_FILE_PATH = path.join(__dirname, "..", "settings.json");
 const TESTIMONIALS_FILE_PATH = path.join(__dirname, "..", "testimonials.json");
+const USERS_FILE_PATH = path.join(__dirname, "..", "users.json");
+const ANALYTICS_FILE_PATH = path.join(__dirname, "..", "analytics.json");
 
 const defaultSettings = {
     calendlyUrl: "https://calendly.com/fateherp",
@@ -35,301 +37,453 @@ function initFiles() {
         fs.writeFileSync(SETTINGS_FILE_PATH, JSON.stringify(defaultSettings, null, 2), "utf-8");
     }
     if (!fs.existsSync(TESTIMONIALS_FILE_PATH)) {
-        fs.writeFileSync(TESTIMONIALS_FILE_PATH, JSON.stringify([]), "utf-8");
-    }
-}
-
-initFiles();
-
-function getSettings() {
-    try {
-        return JSON.parse(fs.readFileSync(SETTINGS_FILE_PATH, "utf-8"));
-    } catch {
-        return defaultSettings;
-    }
-}
-
-function getTestimonials() {
-    try {
-        if (!fs.existsSync(TESTIMONIALS_FILE_PATH)) return [];
-        return JSON.parse(fs.readFileSync(TESTIMONIALS_FILE_PATH, "utf-8"));
-    } catch {
-        return [];
-    }
-}
-
-// --- API ROUTES ---
-
-// Submit a new lead
-apiRouter.post("/leads", (req, res) => {
-    try {
-        const newLead = {
-            ...req.body,
-            status: "New", // Default status
-            date: new Date().toISOString(),
-            id: Date.now().toString()
-        };
-        const leadsData = fs.readFileSync(LEADS_FILE_PATH, "utf-8");
-        const leads = JSON.parse(leadsData);
-
-        leads.push(newLead);
-
-        fs.writeFileSync(LEADS_FILE_PATH, JSON.stringify(leads, null, 2), "utf-8");
-
-        res.status(200).json({ success: true, message: "Lead saved successfully" });
-    } catch (error) {
-        console.error("Error saving lead:", error);
-        res.status(500).json({ success: false, message: "Failed to save lead" });
-    }
-});
-
-// Update Lead Status
-apiRouter.put("/leads/:id/status", (req, res) => {
-    const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-        return res.status(401).json({ success: false, message: "Unauthorized" });
+        if (!fs.existsSync(TESTIMONIALS_FILE_PATH)) {
+            fs.writeFileSync(TESTIMONIALS_FILE_PATH, JSON.stringify([]), "utf-8");
+        }
+        if (!fs.existsSync(USERS_FILE_PATH)) {
+            fs.writeFileSync(USERS_FILE_PATH, JSON.stringify([]), "utf-8");
+        }
+        if (!fs.existsSync(ANALYTICS_FILE_PATH)) {
+            fs.writeFileSync(ANALYTICS_FILE_PATH, JSON.stringify({ visits: [] }), "utf-8");
+        }
     }
 
-    try {
-        jwt.verify(authHeader.split(" ")[1], JWT_SECRET);
-    } catch (e) {
-        return res.status(403).json({ success: false, message: "Invalid or expired token" });
+    initFiles();
+
+    function getSettings() {
+        try {
+            return JSON.parse(fs.readFileSync(SETTINGS_FILE_PATH, "utf-8"));
+        } catch {
+            return defaultSettings;
+        }
     }
 
-    try {
-        const leadId = req.params.id;
-        const { status } = req.body;
+    function getTestimonials() {
+        try {
+            if (!fs.existsSync(TESTIMONIALS_FILE_PATH)) return [];
+            return JSON.parse(fs.readFileSync(TESTIMONIALS_FILE_PATH, "utf-8"));
+        } catch {
+            return [];
+        }
+    }
 
-        const leadsData = fs.readFileSync(LEADS_FILE_PATH, "utf-8");
-        const leads = JSON.parse(leadsData);
+    function getUsers() {
+        try {
+            if (!fs.existsSync(USERS_FILE_PATH)) return [];
+            return JSON.parse(fs.readFileSync(USERS_FILE_PATH, "utf-8"));
+        } catch {
+            return [];
+        }
+    }
 
-        const leadIndex = leads.findIndex((l: any) => l.id === leadId);
-        if (leadIndex === -1) {
-            return res.status(404).json({ success: false, message: "Lead not found" });
+    function getAnalytics() {
+        try {
+            if (!fs.existsSync(ANALYTICS_FILE_PATH)) return { visits: [] };
+            return JSON.parse(fs.readFileSync(ANALYTICS_FILE_PATH, "utf-8"));
+        } catch {
+            return { visits: [] };
+        }
+    }
+
+    // --- API ROUTES ---
+
+    // Submit a new lead
+    apiRouter.post("/leads", (req, res) => {
+        try {
+            const newLead = {
+                ...req.body,
+                status: "New", // Default status
+                date: new Date().toISOString(),
+                id: Date.now().toString()
+            };
+            const leadsData = fs.readFileSync(LEADS_FILE_PATH, "utf-8");
+            const leads = JSON.parse(leadsData);
+
+            leads.push(newLead);
+
+            fs.writeFileSync(LEADS_FILE_PATH, JSON.stringify(leads, null, 2), "utf-8");
+
+            res.status(200).json({ success: true, message: "Lead saved successfully" });
+        } catch (error) {
+            console.error("Error saving lead:", error);
+            res.status(500).json({ success: false, message: "Failed to save lead" });
+        }
+    });
+
+    // Update Lead Status
+    apiRouter.put("/leads/:id/status", (req, res) => {
+        const authHeader = req.headers.authorization;
+        if (!authHeader || !authHeader.startsWith("Bearer ")) {
+            return res.status(401).json({ success: false, message: "Unauthorized" });
         }
 
-        leads[leadIndex].status = status;
-        fs.writeFileSync(LEADS_FILE_PATH, JSON.stringify(leads, null, 2), "utf-8");
-
-        res.status(200).json({ success: true, message: "Status updated successfully" });
-    } catch (error) {
-        console.error("Error updating lead status:", error);
-        res.status(500).json({ success: false, message: "Failed to update status" });
-    }
-});
-
-// Add/Update Lead Comment
-apiRouter.put("/leads/:id/comment", (req, res) => {
-    const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-        return res.status(401).json({ success: false, message: "Unauthorized" });
-    }
-
-    try {
-        jwt.verify(authHeader.split(" ")[1], JWT_SECRET);
-    } catch (e) {
-        return res.status(403).json({ success: false, message: "Invalid or expired token" });
-    }
-
-    try {
-        const leadId = req.params.id;
-        const { comment } = req.body;
-
-        const leadsData = fs.readFileSync(LEADS_FILE_PATH, "utf-8");
-        const leads = JSON.parse(leadsData);
-
-        const leadIndex = leads.findIndex((l: any) => l.id === leadId);
-        if (leadIndex === -1) {
-            return res.status(404).json({ success: false, message: "Lead not found" });
+        try {
+            jwt.verify(authHeader.split(" ")[1], JWT_SECRET);
+        } catch (e) {
+            return res.status(403).json({ success: false, message: "Invalid or expired token" });
         }
 
-        leads[leadIndex].comment = comment;
-        fs.writeFileSync(LEADS_FILE_PATH, JSON.stringify(leads, null, 2), "utf-8");
+        try {
+            const leadId = req.params.id;
+            const { status } = req.body;
 
-        res.status(200).json({ success: true, message: "Comment updated successfully" });
-    } catch (error) {
-        console.error("Error updating lead comment:", error);
-        res.status(500).json({ success: false, message: "Failed to update comment" });
+            const leadsData = fs.readFileSync(LEADS_FILE_PATH, "utf-8");
+            const leads = JSON.parse(leadsData);
+
+            const leadIndex = leads.findIndex((l: any) => l.id === leadId);
+            if (leadIndex === -1) {
+                return res.status(404).json({ success: false, message: "Lead not found" });
+            }
+
+            leads[leadIndex].status = status;
+            fs.writeFileSync(LEADS_FILE_PATH, JSON.stringify(leads, null, 2), "utf-8");
+
+            res.status(200).json({ success: true, message: "Status updated successfully" });
+        } catch (error) {
+            console.error("Error updating lead status:", error);
+            res.status(500).json({ success: false, message: "Failed to update status" });
+        }
+    });
+
+    // Add/Update Lead Comment
+    apiRouter.put("/leads/:id/comment", (req, res) => {
+        const authHeader = req.headers.authorization;
+        if (!authHeader || !authHeader.startsWith("Bearer ")) {
+            return res.status(401).json({ success: false, message: "Unauthorized" });
+        }
+
+        try {
+            jwt.verify(authHeader.split(" ")[1], JWT_SECRET);
+        } catch (e) {
+            return res.status(403).json({ success: false, message: "Invalid or expired token" });
+        }
+
+        try {
+            const leadId = req.params.id;
+            const { comment } = req.body;
+
+            const leadsData = fs.readFileSync(LEADS_FILE_PATH, "utf-8");
+            const leads = JSON.parse(leadsData);
+
+            const leadIndex = leads.findIndex((l: any) => l.id === leadId);
+            if (leadIndex === -1) {
+                return res.status(404).json({ success: false, message: "Lead not found" });
+            }
+
+            leads[leadIndex].comment = comment;
+            fs.writeFileSync(LEADS_FILE_PATH, JSON.stringify(leads, null, 2), "utf-8");
+
+            res.status(200).json({ success: true, message: "Comment updated successfully" });
+        } catch (error) {
+            console.error("Error updating lead comment:", error);
+            res.status(500).json({ success: false, message: "Failed to update comment" });
+        }
+    });
+
+    // Two-Factor Authentication Endpoints
+
+    // 1. Generate QR Code (Initial Setup)
+    apiRouter.post("/setup-2fa", async (req, res) => {
+        const { password } = req.body;
+
+        // Must authenticate with normal password before getting a QR code
+        if (password !== ADMIN_PASSWORD) {
+            return res.status(401).json({ success: false, message: "Invalid admin password" });
+        }
+
+        const settings = getSettings();
+
+        // If already set up, we shouldn't show it again (unless we add a reset mechanism)
+        if (settings.twoFactorSecret) {
+            return res.status(400).json({ success: false, message: "2FA is already configured." });
+        }
+
+        const secret = authenticator.generateSecret();
+        const otpauth = `otpauth://totp/Fateh%20ERP%20Dashboard:Admin?secret=${secret}&issuer=Fateh%20ERP%20Dashboard`;
+
+        try {
+            const qrCodeUrl = await QRCode.toDataURL(otpauth);
+
+            // Save the generated secret
+            const newSettings = { ...settings, twoFactorSecret: secret };
+            fs.writeFileSync(SETTINGS_FILE_PATH, JSON.stringify(newSettings, null, 2), "utf-8");
+
+            res.status(200).json({ success: true, qrCodeUrl, secret });
+        } catch (err) {
+            console.error("QR Code Error:", err);
+            res.status(500).json({ success: false, message: "Failed to generate QR Code" });
+        }
+    });
+
+    // 2. Perform Login with Password + TOTP (Super Admin) OR matching user credentials (Sub-user)
+    apiRouter.post("/login", (req, res) => {
+        const { username, password, token } = req.body;
+
+        // Is it a Super Admin attempt?
+        if (password === ADMIN_PASSWORD) {
+            const settings = getSettings();
+
+            if (!settings.twoFactorSecret) {
+                return res.status(403).json({
+                    success: false,
+                    message: "Setup Required",
+                    requiresSetup: true
+                });
+            }
+
+            if (!token) {
+                return res.status(400).json({ success: false, message: "Google Authenticator code required" });
+            }
+
+            const isValid = authenticator.verify({ token, secret: settings.twoFactorSecret });
+            if (!isValid) {
+                return res.status(401).json({ success: false, message: "Invalid Authentication Code" });
+            }
+
+            const jwtToken = jwt.sign({ role: "super_admin", username: "Super Admin" }, JWT_SECRET, { expiresIn: "24h" });
+            return res.status(200).json({ success: true, token: jwtToken, message: "Logged in successfully as Super Admin", role: "super_admin" });
+        }
+
+        // Sub-user logic
+        // We expect both 'username' and 'password' in request body if bypassing the global password
+        if (username && password) {
+            const users = getUsers();
+            const user = users.find((u: any) => u.username === username && u.password === password);
+
+            if (user) {
+                const jwtToken = jwt.sign({ role: "user", username: user.username, id: user.id }, JWT_SECRET, { expiresIn: "24h" });
+                return res.status(200).json({ success: true, token: jwtToken, message: `Logged in as ${user.username}`, role: "user" });
+            }
+        }
+
+        // Default Fallback mapping Invalid
+        return res.status(401).json({ success: false, message: "Invalid credentials" });
+    });
+
+    // ============================================
+    // TESTIMONIALS API (Public GET, Protected Write)
+    // ============================================
+
+    // Get Testimonials (Public)
+    apiRouter.get("/testimonials", (req, res) => {
+        res.status(200).json({ success: true, testimonials: getTestimonials() });
+    });
+
+    // Create Testimonial
+    apiRouter.post("/testimonials", (req, res) => {
+        const authHeader = req.headers.authorization;
+        if (!authHeader || !authHeader.startsWith("Bearer ")) return res.status(401).json({ success: false, message: "Unauthorized" });
+
+        try { jwt.verify(authHeader.split(" ")[1], JWT_SECRET); } catch (e) { return res.status(403).json({ success: false, message: "Invalid token" }); }
+
+        try {
+            const newTestimonial = { ...req.body, id: Date.now().toString() };
+            const testimonials = getTestimonials();
+            testimonials.push(newTestimonial);
+            fs.writeFileSync(TESTIMONIALS_FILE_PATH, JSON.stringify(testimonials, null, 2), "utf-8");
+            res.status(201).json({ success: true, testimonial: newTestimonial });
+        } catch (error) {
+            res.status(500).json({ success: false, message: "Failed to save testimonial" });
+        }
+    });
+
+    // Update Testimonial
+    apiRouter.put("/testimonials/:id", (req, res) => {
+        const authHeader = req.headers.authorization;
+        if (!authHeader || !authHeader.startsWith("Bearer ")) return res.status(401).json({ success: false, message: "Unauthorized" });
+
+        try { jwt.verify(authHeader.split(" ")[1], JWT_SECRET); } catch (e) { return res.status(403).json({ success: false, message: "Invalid token" }); }
+
+        try {
+            let testimonials = getTestimonials();
+            const index = testimonials.findIndex((t: any) => t.id === req.params.id);
+            if (index === -1) return res.status(404).json({ success: false, message: "Not found" });
+
+            testimonials[index] = { ...testimonials[index], ...req.body };
+            fs.writeFileSync(TESTIMONIALS_FILE_PATH, JSON.stringify(testimonials, null, 2), "utf-8");
+            res.status(200).json({ success: true, testimonial: testimonials[index] });
+        } catch (error) {
+            res.status(500).json({ success: false, message: "Failed to update testimonial" });
+        }
+    });
+
+    // Delete Testimonial
+    apiRouter.delete("/testimonials/:id", (req, res) => {
+        const authHeader = req.headers.authorization;
+        if (!authHeader || !authHeader.startsWith("Bearer ")) return res.status(401).json({ success: false, message: "Unauthorized" });
+
+        try { jwt.verify(authHeader.split(" ")[1], JWT_SECRET); } catch (e) { return res.status(403).json({ success: false, message: "Invalid token" }); }
+
+        try {
+            let testimonials = getTestimonials();
+            const newTestimonials = testimonials.filter((t: any) => t.id !== req.params.id);
+            fs.writeFileSync(TESTIMONIALS_FILE_PATH, JSON.stringify(newTestimonials, null, 2), "utf-8");
+            res.status(200).json({ success: true });
+        } catch (error) {
+            res.status(500).json({ success: false, message: "Failed to delete testimonial" });
+        }
+    });
+
+    // Get Leads (Protected)
+    apiRouter.get("/leads", (req, res) => {
+        const authHeader = req.headers.authorization;
+        if (!authHeader || !authHeader.startsWith("Bearer ")) {
+            return res.status(401).json({ success: false, message: "Unauthorized" });
+        }
+
+        try {
+            jwt.verify(authHeader.split(" ")[1], JWT_SECRET);
+        } catch (e) {
+            return res.status(403).json({ success: false, message: "Invalid or expired token" });
+        }
+
+        try {
+            const leadsData = fs.readFileSync(LEADS_FILE_PATH, "utf-8");
+            const leads = JSON.parse(leadsData);
+            res.status(200).json({ success: true, leads });
+        } catch (error) {
+            console.error("Error reading leads:", error);
+            res.status(500).json({ success: false, message: "Failed to read leads" });
+        }
+    });
+
+    // Settings Endpoints
+    apiRouter.get("/settings", (req, res) => {
+        res.status(200).json({ success: true, settings: getSettings() });
+    });
+
+    apiRouter.put("/settings", (req, res) => {
+        const authHeader = req.headers.authorization;
+        if (!authHeader || !authHeader.startsWith("Bearer ")) {
+            return res.status(401).json({ success: false, message: "Unauthorized" });
+        }
+
+        try {
+            jwt.verify(authHeader.split(" ")[1], JWT_SECRET);
+        } catch (e) {
+            return res.status(403).json({ success: false, message: "Invalid or expired token" });
+        }
+
+        try {
+            const newSettings = { ...getSettings(), ...req.body };
+            fs.writeFileSync(SETTINGS_FILE_PATH, JSON.stringify(newSettings, null, 2), "utf-8");
+            res.status(200).json({ success: true, message: "Settings saved successfully", settings: newSettings });
+        } catch (error) {
+            res.status(500).json({ success: false, message: "Failed to save settings" });
+        }
+    });
+
+    // ============================================
+    // USERS API (Super Admin Protected)
+    // ============================================
+
+    // Middleware to check for true super_admin 
+    function superAdminOnly(req: any, res: any, next: any) {
+        const authHeader = req.headers.authorization;
+        if (!authHeader || !authHeader.startsWith("Bearer ")) return res.status(401).json({ success: false, message: "Unauthorized" });
+        try {
+            const decoded: any = jwt.verify(authHeader.split(" ")[1], JWT_SECRET);
+            if (decoded.role !== "super_admin") {
+                return res.status(403).json({ success: false, message: "Forbidden: Super Admin only" });
+            }
+            next();
+        } catch (e) {
+            return res.status(403).json({ success: false, message: "Invalid token" });
+        }
     }
-});
 
-// Two-Factor Authentication Endpoints
+    apiRouter.get("/users", superAdminOnly, (req, res) => {
+        // Strip passwords to frontend
+        const users = getUsers().map((u: any) => ({ id: u.id, username: u.username, role: u.role, created: u.created }));
+        res.status(200).json({ success: true, users });
+    });
 
-// 1. Generate QR Code (Initial Setup)
-apiRouter.post("/setup-2fa", async (req, res) => {
-    const { password } = req.body;
+    apiRouter.post("/users", superAdminOnly, (req, res) => {
+        try {
+            const { username, password } = req.body;
+            if (!username || !password) return res.status(400).json({ success: false, message: "Username and password required" });
 
-    // Must authenticate with normal password before getting a QR code
-    if (password !== ADMIN_PASSWORD) {
-        return res.status(401).json({ success: false, message: "Invalid admin password" });
-    }
+            let users = getUsers();
+            if (users.some((u: any) => u.username === username)) {
+                return res.status(400).json({ success: false, message: "Username already exists" });
+            }
 
-    const settings = getSettings();
+            const newUser = { id: Date.now().toString(), username, password, role: "user", created: new Date().toISOString() };
+            users.push(newUser);
+            fs.writeFileSync(USERS_FILE_PATH, JSON.stringify(users, null, 2), "utf-8");
 
-    // If already set up, we shouldn't show it again (unless we add a reset mechanism)
-    if (settings.twoFactorSecret) {
-        return res.status(400).json({ success: false, message: "2FA is already configured." });
-    }
+            res.status(201).json({ success: true, message: "User created" });
+        } catch (error) {
+            res.status(500).json({ success: false, message: "Failed to save user" });
+        }
+    });
 
-    const secret = authenticator.generateSecret();
-    const otpauth = `otpauth://totp/Fateh%20ERP%20Dashboard:Admin?secret=${secret}&issuer=Fateh%20ERP%20Dashboard`;
+    apiRouter.put("/users/:id", superAdminOnly, (req, res) => {
+        try {
+            let users = getUsers();
+            const index = users.findIndex((u: any) => u.id === req.params.id);
+            if (index === -1) return res.status(404).json({ success: false, message: "User not found" });
 
-    try {
-        const qrCodeUrl = await QRCode.toDataURL(otpauth);
+            // Update password if provided
+            if (req.body.password) {
+                users[index].password = req.body.password;
+            }
 
-        // Save the generated secret
-        const newSettings = { ...settings, twoFactorSecret: secret };
-        fs.writeFileSync(SETTINGS_FILE_PATH, JSON.stringify(newSettings, null, 2), "utf-8");
+            fs.writeFileSync(USERS_FILE_PATH, JSON.stringify(users, null, 2), "utf-8");
+            res.status(200).json({ success: true, message: "User updated" });
+        } catch (error) {
+            res.status(500).json({ success: false, message: "Failed to update user" });
+        }
+    });
 
-        res.status(200).json({ success: true, qrCodeUrl, secret });
-    } catch (err) {
-        console.error("QR Code Error:", err);
-        res.status(500).json({ success: false, message: "Failed to generate QR Code" });
-    }
-});
+    apiRouter.delete("/users/:id", superAdminOnly, (req, res) => {
+        try {
+            let users = getUsers();
+            const newUsers = users.filter((u: any) => u.id !== req.params.id);
+            fs.writeFileSync(USERS_FILE_PATH, JSON.stringify(newUsers, null, 2), "utf-8");
+            res.status(200).json({ success: true, message: "User deleted" });
+        } catch (error) {
+            res.status(500).json({ success: false, message: "Failed to delete user" });
+        }
+    });
 
-// 2. Perform Login with Password + TOTP
-apiRouter.post("/login", (req, res) => {
-    const { password, token } = req.body;
+    // ============================================
+    // ANALYTICS API 
+    // ============================================
 
-    if (password !== ADMIN_PASSWORD) {
-        return res.status(401).json({ success: false, message: "Invalid password" });
-    }
+    // Send visit log (Public)
+    apiRouter.post("/analytics/visit", (req, res) => {
+        try {
+            const { path, browser } = req.body;
+            let analytics = getAnalytics();
+            analytics.visits.push({
+                date: new Date().toISOString(),
+                path: path || "/",
+                browser: browser || "Unknown"
+            });
 
-    const settings = getSettings();
+            // Prevent huge files in local disk, keep last 10000 entries max.
+            if (analytics.visits.length > 10000) {
+                analytics.visits = analytics.visits.slice(analytics.visits.length - 10000);
+            }
 
-    // If 2FA isn't configured yet, send a special response telling the frontend to show the setup screen
-    if (!settings.twoFactorSecret) {
-        return res.status(403).json({
-            success: false,
-            message: "Setup Required",
-            requiresSetup: true
-        });
-    }
+            fs.writeFileSync(ANALYTICS_FILE_PATH, JSON.stringify(analytics, null, 2), "utf-8");
+            res.status(200).json({ success: true });
+        } catch (error) {
+            console.error("Failed to log visit:", error);
+            res.status(500).json({ success: false });
+        }
+    });
 
-    if (!token) {
-        return res.status(400).json({ success: false, message: "Google Authenticator code required" });
-    }
+    // Get visits (Protected)
+    apiRouter.get("/analytics", (req, res) => {
+        const authHeader = req.headers.authorization;
+        if (!authHeader || !authHeader.startsWith("Bearer ")) return res.status(401).json({ success: false, message: "Unauthorized" });
 
-    const isValid = authenticator.verify({ token, secret: settings.twoFactorSecret });
+        try { jwt.verify(authHeader.split(" ")[1], JWT_SECRET); } catch (e) { return res.status(403).json({ success: false, message: "Invalid token" }); }
 
-    if (!isValid) {
-        return res.status(401).json({ success: false, message: "Invalid Authentication Code" });
-    }
+        res.status(200).json({ success: true, ...getAnalytics() });
+    });
 
-    const jwtToken = jwt.sign({ role: "admin" }, JWT_SECRET, { expiresIn: "24h" });
-    res.status(200).json({ success: true, token: jwtToken, message: "Logged in successfully" });
-});
-
-// ============================================
-// TESTIMONIALS API (Public GET, Protected Write)
-// ============================================
-
-// Get Testimonials (Public)
-apiRouter.get("/testimonials", (req, res) => {
-    res.status(200).json({ success: true, testimonials: getTestimonials() });
-});
-
-// Create Testimonial
-apiRouter.post("/testimonials", (req, res) => {
-    const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith("Bearer ")) return res.status(401).json({ success: false, message: "Unauthorized" });
-
-    try { jwt.verify(authHeader.split(" ")[1], JWT_SECRET); } catch (e) { return res.status(403).json({ success: false, message: "Invalid token" }); }
-
-    try {
-        const newTestimonial = { ...req.body, id: Date.now().toString() };
-        const testimonials = getTestimonials();
-        testimonials.push(newTestimonial);
-        fs.writeFileSync(TESTIMONIALS_FILE_PATH, JSON.stringify(testimonials, null, 2), "utf-8");
-        res.status(201).json({ success: true, testimonial: newTestimonial });
-    } catch (error) {
-        res.status(500).json({ success: false, message: "Failed to save testimonial" });
-    }
-});
-
-// Update Testimonial
-apiRouter.put("/testimonials/:id", (req, res) => {
-    const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith("Bearer ")) return res.status(401).json({ success: false, message: "Unauthorized" });
-
-    try { jwt.verify(authHeader.split(" ")[1], JWT_SECRET); } catch (e) { return res.status(403).json({ success: false, message: "Invalid token" }); }
-
-    try {
-        let testimonials = getTestimonials();
-        const index = testimonials.findIndex((t: any) => t.id === req.params.id);
-        if (index === -1) return res.status(404).json({ success: false, message: "Not found" });
-
-        testimonials[index] = { ...testimonials[index], ...req.body };
-        fs.writeFileSync(TESTIMONIALS_FILE_PATH, JSON.stringify(testimonials, null, 2), "utf-8");
-        res.status(200).json({ success: true, testimonial: testimonials[index] });
-    } catch (error) {
-        res.status(500).json({ success: false, message: "Failed to update testimonial" });
-    }
-});
-
-// Delete Testimonial
-apiRouter.delete("/testimonials/:id", (req, res) => {
-    const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith("Bearer ")) return res.status(401).json({ success: false, message: "Unauthorized" });
-
-    try { jwt.verify(authHeader.split(" ")[1], JWT_SECRET); } catch (e) { return res.status(403).json({ success: false, message: "Invalid token" }); }
-
-    try {
-        let testimonials = getTestimonials();
-        const newTestimonials = testimonials.filter((t: any) => t.id !== req.params.id);
-        fs.writeFileSync(TESTIMONIALS_FILE_PATH, JSON.stringify(newTestimonials, null, 2), "utf-8");
-        res.status(200).json({ success: true });
-    } catch (error) {
-        res.status(500).json({ success: false, message: "Failed to delete testimonial" });
-    }
-});
-
-// Get Leads (Protected)
-apiRouter.get("/leads", (req, res) => {
-    const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-        return res.status(401).json({ success: false, message: "Unauthorized" });
-    }
-
-    try {
-        jwt.verify(authHeader.split(" ")[1], JWT_SECRET);
-    } catch (e) {
-        return res.status(403).json({ success: false, message: "Invalid or expired token" });
-    }
-
-    try {
-        const leadsData = fs.readFileSync(LEADS_FILE_PATH, "utf-8");
-        const leads = JSON.parse(leadsData);
-        res.status(200).json({ success: true, leads });
-    } catch (error) {
-        console.error("Error reading leads:", error);
-        res.status(500).json({ success: false, message: "Failed to read leads" });
-    }
-});
-
-// Settings Endpoints
-apiRouter.get("/settings", (req, res) => {
-    res.status(200).json({ success: true, settings: getSettings() });
-});
-
-apiRouter.put("/settings", (req, res) => {
-    const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-        return res.status(401).json({ success: false, message: "Unauthorized" });
-    }
-
-    try {
-        jwt.verify(authHeader.split(" ")[1], JWT_SECRET);
-    } catch (e) {
-        return res.status(403).json({ success: false, message: "Invalid or expired token" });
-    }
-
-    try {
-        const newSettings = { ...getSettings(), ...req.body };
-        fs.writeFileSync(SETTINGS_FILE_PATH, JSON.stringify(newSettings, null, 2), "utf-8");
-        res.status(200).json({ success: true, message: "Settings saved successfully", settings: newSettings });
-    } catch (error) {
-        res.status(500).json({ success: false, message: "Failed to save settings" });
-    }
-});
+    return apiRouter;
+}

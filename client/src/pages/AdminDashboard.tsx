@@ -1,9 +1,36 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
-import { LogOut, RefreshCcw, User, Building2, Phone, MapPin, CalendarDays, Download, Activity, CheckCircle2, Inbox, ChevronLeft, ChevronRight, MessageSquare, Settings, Star, Plus, Trash2, Edit, LayoutDashboard, Users, Menu } from "lucide-react";
+import { LogOut, RefreshCcw, User, Building2, Phone, MapPin, CalendarDays, Download, Activity, CheckCircle2, Inbox, ChevronLeft, ChevronRight, MessageSquare, Settings, Star, Plus, Trash2, Edit, LayoutDashboard, Users, Menu, CreditCard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+
+interface PricingPlan {
+    name: string;
+    price: string;
+    period: string;
+    description: string;
+    popular: boolean;
+    features: string[];
+    cta: string;
+}
+
+interface ComparisonFeature {
+    name: string;
+    starter: boolean;
+    professional: boolean;
+    enterprise: boolean;
+}
+
+interface ComparisonCategory {
+    name: string;
+    features: ComparisonFeature[];
+}
+
+interface PricingData {
+    plans: PricingPlan[];
+    comparisonCategories: ComparisonCategory[];
+}
 
 interface Lead {
     id: string;
@@ -42,7 +69,7 @@ export default function AdminDashboard() {
     const [error, setError] = useState("");
     const [statusFilter, setStatusFilter] = useState("All");
     const [updatingId, setUpdatingId] = useState<string | null>(null);
-    const [activeTab, setActiveTab] = useState<"dashboard" | "leads" | "testimonials" | "users" | "settings" | "trash">("dashboard");
+    const [activeTab, setActiveTab] = useState<"dashboard" | "leads" | "testimonials" | "users" | "settings" | "trash" | "pricing">("dashboard");
     const [sidebarOpen, setSidebarOpen] = useState(true);
 
     // Authentication Context
@@ -81,6 +108,10 @@ export default function AdminDashboard() {
     const [testimonialFormOpen, setTestimonialFormOpen] = useState(false);
     const [savingTestimonial, setSavingTestimonial] = useState(false);
 
+    // Pricing Data
+    const [pricing, setPricing] = useState<PricingData | null>(null);
+    const [savingPricing, setSavingPricing] = useState(false);
+
     // Initial Auth Decoding & Data Fetching
     useEffect(() => {
         const token = localStorage.getItem("adminToken");
@@ -104,6 +135,7 @@ export default function AdminDashboard() {
         fetchTestimonials();
         fetchAnalytics();
         fetchUsers();
+        fetchPricing();
     }, [setLocation]);
 
     // Reset pagination on filter change
@@ -115,6 +147,18 @@ export default function AdminDashboard() {
         "Authorization": `Bearer ${localStorage.getItem("adminToken")}`,
         "Content-Type": "application/json"
     });
+
+    const fetchPricing = async () => {
+        try {
+            const res = await fetch("/api/pricing");
+            const data = await res.json();
+            if (data.success && data.pricing) {
+                setPricing(data.pricing);
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    };
 
     const fetchAnalytics = async () => {
         try {
@@ -314,6 +358,7 @@ export default function AdminDashboard() {
         { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
         { id: "leads", label: "Leads", icon: Inbox },
         { id: "testimonials", label: "Testimonials", icon: Star },
+        { id: "pricing", label: "Pricing Editor", icon: CreditCard },
         { id: "trash", label: "Trash Bin", icon: Trash2 },
         ...(adminRole === "super_admin" ? [{ id: "users", label: "Users", icon: Users }] : []),
         { id: "settings", label: "Settings", icon: Settings },
@@ -339,7 +384,7 @@ export default function AdminDashboard() {
                     {navItems.map(item => (
                         <button
                             key={item.id}
-                            onClick={() => setActiveTab(item.id as "dashboard" | "leads" | "testimonials" | "users" | "settings" | "trash")}
+                            onClick={() => setActiveTab(item.id as "dashboard" | "leads" | "testimonials" | "users" | "settings" | "trash" | "pricing")}
                             className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${activeTab === item.id ? 'bg-blue-600 text-white shadow-md' : 'text-slate-300 hover:bg-white/10 hover:text-white'}`}
                         >
                             <item.icon className={`w-5 h-5 ${activeTab === item.id ? 'text-white' : 'text-slate-400'}`} />
@@ -717,6 +762,154 @@ export default function AdminDashboard() {
                                         No testimonials available. Add one to display it on the site.
                                     </div>
                                 )}
+                            </div>
+                        </div>
+                    )}
+
+                    {activeTab === "pricing" && pricing && (
+                        <div className="space-y-6 max-w-7xl mx-auto pb-12">
+                            <div className="flex items-center justify-between bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                                <div>
+                                    <h2 className="text-xl font-bold text-slate-800">Pricing Data Editor</h2>
+                                    <p className="text-sm text-slate-500">Modify the 3 main subscription plans and comparison features.</p>
+                                </div>
+                                <Button
+                                    onClick={async () => {
+                                        setSavingPricing(true);
+                                        try {
+                                            const res = await fetch("/api/pricing", {
+                                                method: "PUT",
+                                                headers: getHeaders(),
+                                                body: JSON.stringify(pricing)
+                                            });
+                                            if (res.ok) alert("Pricing saved successfully!");
+                                            else alert("Error saving pricing");
+                                        } catch (e) { alert("Network error"); }
+                                        finally { setSavingPricing(false); }
+                                    }}
+                                    disabled={savingPricing}
+                                    className="bg-primary hover:bg-primary-light"
+                                >
+                                    {savingPricing ? "Saving..." : "Save All Pricing Changes"}
+                                </Button>
+                            </div>
+
+                            <h3 className="text-lg font-bold text-slate-800 mb-2 mt-8">Main Pricing Tiers (3 Fixed)</h3>
+                            <div className="grid lg:grid-cols-3 gap-6">
+                                {pricing.plans.map((plan, planIdx) => (
+                                    <div key={planIdx} className="bg-white p-6 rounded-xl shadow-sm border border-slate-200 space-y-4">
+                                        <div className="font-bold text-lg border-b pb-2">{plan.name} Tier</div>
+                                        <div className="space-y-1.5"><label className="text-xs font-semibold text-slate-700">Display Name</label><input value={plan.name} onChange={e => {
+                                            const newPricing = { ...pricing }; newPricing.plans[planIdx].name = e.target.value; setPricing(newPricing);
+                                        }} className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg" /></div>
+                                        <div className="space-y-1.5"><label className="text-xs font-semibold text-slate-700">Price Display (e.g. 2,499)</label><input value={plan.price} onChange={e => {
+                                            const newPricing = { ...pricing }; newPricing.plans[planIdx].price = e.target.value; setPricing(newPricing);
+                                        }} className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg" /></div>
+                                        <div className="space-y-1.5"><label className="text-xs font-semibold text-slate-700">Period (e.g. / Year)</label><input value={plan.period} onChange={e => {
+                                            const newPricing = { ...pricing }; newPricing.plans[planIdx].period = e.target.value; setPricing(newPricing);
+                                        }} className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg" /></div>
+                                        <div className="space-y-1.5"><label className="text-xs font-semibold text-slate-700">Description</label><textarea value={plan.description} onChange={e => {
+                                            const newPricing = { ...pricing }; newPricing.plans[planIdx].description = e.target.value; setPricing(newPricing);
+                                        }} className="w-full h-20 px-3 py-2 text-sm border border-slate-300 rounded-lg" /></div>
+                                        <div className="space-y-1.5"><label className="text-xs font-semibold text-slate-700">CTA Button Text</label><input value={plan.cta} onChange={e => {
+                                            const newPricing = { ...pricing }; newPricing.plans[planIdx].cta = e.target.value; setPricing(newPricing);
+                                        }} className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg" /></div>
+                                        <div className="flex items-center gap-2 pt-2">
+                                            <input type="checkbox" checked={plan.popular} onChange={e => {
+                                                const newPricing = { ...pricing }; newPricing.plans.forEach(p => p.popular = false); newPricing.plans[planIdx].popular = e.target.checked; setPricing(newPricing);
+                                            }} className="w-4 h-4 text-primary rounded border-slate-300" id={`pop-${planIdx}`} />
+                                            <label htmlFor={`pop-${planIdx}`} className="text-sm font-semibold text-slate-700 text-primary cursor-pointer">Mark as "Most Popular"</label>
+                                        </div>
+                                        <div className="space-y-1.5 pt-2 border-t mt-4">
+                                            <label className="text-xs font-semibold text-slate-700 flex justify-between mt-2">Highlight Features <button onClick={() => {
+                                                const newPricing = { ...pricing }; newPricing.plans[planIdx].features.push("New Feature"); setPricing(newPricing);
+                                            }} className="text-blue-600 hover:text-blue-800 bg-blue-50 px-2 py-0.5 rounded">+ Add</button></label>
+                                            {plan.features.map((feat, featIdx) => (
+                                                <div key={featIdx} className="flex gap-2 mb-2">
+                                                    <input value={feat} onChange={e => {
+                                                        const newPricing = { ...pricing }; newPricing.plans[planIdx].features[featIdx] = e.target.value; setPricing(newPricing);
+                                                    }} className="flex-1 px-3 py-1.5 text-sm border border-slate-300 rounded-lg" />
+                                                    <button onClick={() => {
+                                                        const newPricing = { ...pricing }; newPricing.plans[planIdx].features.splice(featIdx, 1); setPricing(newPricing);
+                                                    }} className="p-1.5 text-red-500 hover:bg-red-50 rounded"><Trash2 className="w-4 h-4" /></button>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+
+                            <h3 className="text-lg font-bold text-slate-800 mb-2 mt-12">Comprehensive Feature Comparison</h3>
+                            <div className="space-y-6">
+                                {pricing.comparisonCategories.map((cat, catIdx) => (
+                                    <div key={catIdx} className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                                        <div className="bg-slate-50 border-b border-slate-200 p-4 flex justify-between items-center shrink-0">
+                                            <div className="flex items-center gap-2 font-bold text-slate-800 w-1/2">
+                                                Category:
+                                                <input value={cat.name} onChange={e => {
+                                                    const newPricing = { ...pricing }; newPricing.comparisonCategories[catIdx].name = e.target.value; setPricing(newPricing);
+                                                }} className="font-bold text-slate-800 bg-white border border-slate-200 focus:ring-1 focus:ring-primary/50 rounded px-2 py-1 w-full" />
+                                            </div>
+                                            <div className="flex gap-2">
+                                                <Button size="sm" variant="outline" onClick={() => {
+                                                    const newPricing = { ...pricing }; newPricing.comparisonCategories[catIdx].features.push({ name: "New Feature", starter: false, professional: false, enterprise: false }); setPricing(newPricing);
+                                                }} className="h-8 text-xs bg-white"><Plus className="w-3 h-3 mr-1" /> Add Feature Row</Button>
+                                                <Button size="sm" variant="outline" onClick={() => {
+                                                    if (confirm("Delete this entire category?")) {
+                                                        const newPricing = { ...pricing }; newPricing.comparisonCategories.splice(catIdx, 1); setPricing(newPricing);
+                                                    }
+                                                }} className="h-8 text-xs text-red-600 hover:text-red-700 hover:bg-red-50"><Trash2 className="w-3 h-3 mr-1" /> Remove Category</Button>
+                                            </div>
+                                        </div>
+                                        <div className="p-0 overflow-x-auto">
+                                            <table className="w-full text-left text-sm whitespace-nowrap">
+                                                <thead className="bg-white border-b">
+                                                    <tr>
+                                                        <th className="px-4 py-3 font-semibold text-slate-600 min-w-[200px]">Feature Name</th>
+                                                        <th className="px-4 py-3 font-semibold text-slate-600 text-center w-32">Starter</th>
+                                                        <th className="px-4 py-3 font-semibold text-slate-600 text-center w-32">Professional</th>
+                                                        <th className="px-4 py-3 font-semibold text-slate-600 text-center w-32">Enterprise</th>
+                                                        <th className="px-4 py-3 font-semibold text-slate-600 text-center w-16"></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody className="divide-y divide-slate-100">
+                                                    {cat.features.map((feat, featIdx) => (
+                                                        <tr key={featIdx} className="hover:bg-slate-50/50">
+                                                            <td className="px-4 py-2">
+                                                                <input value={feat.name} onChange={e => {
+                                                                    const newPricing = { ...pricing }; newPricing.comparisonCategories[catIdx].features[featIdx].name = e.target.value; setPricing(newPricing);
+                                                                }} className="w-full px-2 py-1.5 border border-slate-200 rounded text-sm focus:border-primary/50 focus:ring-1 focus:ring-primary/50" />
+                                                            </td>
+                                                            <td className="px-4 py-2 text-center">
+                                                                <input type="checkbox" checked={feat.starter} onChange={e => {
+                                                                    const newPricing = { ...pricing }; newPricing.comparisonCategories[catIdx].features[featIdx].starter = e.target.checked; setPricing(newPricing);
+                                                                }} className="w-5 h-5 rounded text-primary focus:ring-primary cursor-pointer border-slate-300" />
+                                                            </td>
+                                                            <td className="px-4 py-2 text-center">
+                                                                <input type="checkbox" checked={feat.professional} onChange={e => {
+                                                                    const newPricing = { ...pricing }; newPricing.comparisonCategories[catIdx].features[featIdx].professional = e.target.checked; setPricing(newPricing);
+                                                                }} className="w-5 h-5 rounded text-primary focus:ring-primary cursor-pointer border-slate-300" />
+                                                            </td>
+                                                            <td className="px-4 py-2 text-center">
+                                                                <input type="checkbox" checked={feat.enterprise} onChange={e => {
+                                                                    const newPricing = { ...pricing }; newPricing.comparisonCategories[catIdx].features[featIdx].enterprise = e.target.checked; setPricing(newPricing);
+                                                                }} className="w-5 h-5 rounded text-primary focus:ring-primary cursor-pointer border-slate-300" />
+                                                            </td>
+                                                            <td className="px-4 py-2 text-center">
+                                                                <button onClick={() => {
+                                                                    const newPricing = { ...pricing }; newPricing.comparisonCategories[catIdx].features.splice(featIdx, 1); setPricing(newPricing);
+                                                                }} className="p-1.5 text-red-500 hover:bg-red-50 rounded"><Trash2 className="w-4 h-4" /></button>
+                                                            </td>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                ))}
+                                <Button variant="outline" onClick={() => {
+                                    const newPricing = { ...pricing }; newPricing.comparisonCategories.push({ name: "New Category", features: [] }); setPricing(newPricing);
+                                }} className="w-full border-dashed py-8 bg-slate-50 text-slate-500 hover:text-primary hover:border-primary/50 hover:bg-primary/5"><Plus className="w-4 h-4 mr-2" /> Add New Comparison Category</Button>
                             </div>
                         </div>
                     )}

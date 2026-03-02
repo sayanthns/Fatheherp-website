@@ -18,6 +18,7 @@ const SETTINGS_FILE_PATH = path.join(__dirname, "..", "settings.json");
 const TESTIMONIALS_FILE_PATH = path.join(__dirname, "..", "testimonials.json");
 const USERS_FILE_PATH = path.join(__dirname, "..", "users.json");
 const ANALYTICS_FILE_PATH = path.join(__dirname, "..", "analytics.json");
+const PRICING_FILE_PATH = path.join(__dirname, "..", "pricing.json");
 
 const defaultSettings = {
     calendlyUrl: "https://calendly.com/fateherp",
@@ -44,6 +45,10 @@ function initFiles() {
     }
     if (!fs.existsSync(ANALYTICS_FILE_PATH)) {
         fs.writeFileSync(ANALYTICS_FILE_PATH, JSON.stringify({ visits: [] }), "utf-8");
+    }
+    if (!fs.existsSync(PRICING_FILE_PATH)) {
+        const defaultPricing = { plans: [], comparisonCategories: [] };
+        fs.writeFileSync(PRICING_FILE_PATH, JSON.stringify(defaultPricing, null, 2), "utf-8");
     }
 }
 
@@ -81,6 +86,15 @@ function getAnalytics() {
         return JSON.parse(fs.readFileSync(ANALYTICS_FILE_PATH, "utf-8"));
     } catch {
         return { visits: [] };
+    }
+}
+
+function getPricing() {
+    try {
+        if (!fs.existsSync(PRICING_FILE_PATH)) return { plans: [], comparisonCategories: [] };
+        return JSON.parse(fs.readFileSync(PRICING_FILE_PATH, "utf-8"));
+    } catch {
+        return { plans: [], comparisonCategories: [] };
     }
 }
 
@@ -489,6 +503,36 @@ apiRouter.delete("/users/:id", superAdminOnly, (req, res) => {
         res.status(200).json({ success: true, message: "User deleted" });
     } catch (error) {
         res.status(500).json({ success: false, message: "Failed to delete user" });
+    }
+});
+
+// ============================================
+// PRICING API
+// ============================================
+
+apiRouter.get("/pricing", (req, res) => {
+    res.status(200).json({ success: true, pricing: getPricing() });
+});
+
+apiRouter.put("/pricing", (req, res) => {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+        return res.status(401).json({ success: false, message: "Unauthorized" });
+    }
+
+    try {
+        jwt.verify(authHeader.split(" ")[1], JWT_SECRET);
+    } catch (e) {
+        return res.status(403).json({ success: false, message: "Invalid or expired token" });
+    }
+
+    try {
+        const newPricing = req.body;
+        fs.writeFileSync(PRICING_FILE_PATH, JSON.stringify(newPricing, null, 2), "utf-8");
+        res.status(200).json({ success: true, message: "Pricing updated successfully", pricing: newPricing });
+    } catch (error) {
+        console.error("Error updating pricing:", error);
+        res.status(500).json({ success: false, message: "Failed to update pricing" });
     }
 });
 

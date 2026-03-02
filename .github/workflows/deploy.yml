@@ -18,5 +18,7 @@ jobs:
           script: |
             cd /opt/Fatheherp-website
             git pull origin master
+            mkdir -p data
+            touch data/users.json data/analytics.json data/pricing.json data/leads.json data/testimonials.json data/settings.json
             docker compose build
             docker compose up -d

@@ -3,123 +3,48 @@
  * Pricing: Three-tier cards, center card elevated and highlighted
  * Feature comparison table below
  */
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Check, X, ChevronDown, ChevronUp, Star } from "lucide-react";
 import { LeadCaptureDialog } from "@/components/LeadCaptureDialog";
 
-const plans = [
-  {
-    name: "Starter",
-    price: "2,499",
-    period: "SAR / Business / Year",
-    description: "For small traders and single-store businesses getting started with digital operations.",
-    popular: false,
-    features: [
-      "ZATCA Phase 2 E-Invoicing",
-      "Core Accounting & VAT",
-      "Sales & Quotations",
-      "1 Business Entity",
-      "Single-Store Inventory",
-      "1 User",
-      "15 Support Tickets / Year",
-      "Email Support",
-    ],
-    cta: "Get Started",
-  },
-  {
-    name: "Professional",
-    price: "5,999",
-    period: "SAR / Business / Year",
-    description: "For growing traders with multiple stores, advanced inventory needs, and CRM requirements.",
-    popular: true,
-    features: [
-      "Everything in Starter",
-      "Up to 3 Business Branches",
-      "Multi-Warehouse Management",
-      "Advanced Cost Accounting",
-      "CRM & Loyalty Programs",
-      "3 Users",
-      "40 Support Tickets / Year",
-      "Priority Phone & Email Support",
-    ],
-    cta: "Get Started",
-  },
-  {
-    name: "Enterprise",
-    price: "Custom",
-    period: "Tailored Pricing",
-    description: "For large trading groups and holding companies needing unlimited power and custom integrations.",
-    popular: false,
-    features: [
-      "Everything in Professional",
-      "Unlimited Business Entities",
-      "HR & Payroll Modules",
-      "Advanced Project Management",
-      "Custom Integrations & API",
-      "Unlimited Users & Branches",
-      "24/7 Dedicated Support",
-      "Dedicated Account Manager",
-    ],
-    cta: "Request Quote",
-  },
-];
-
-const comparisonCategories = [
-  {
-    name: "Sales Management",
-    features: [
-      { name: "E-Invoicing (ZATCA Phase 2)", starter: true, professional: true, enterprise: true },
-      { name: "Quotations & Sales Orders", starter: true, professional: true, enterprise: true },
-      { name: "Cloud POS", starter: false, professional: true, enterprise: true },
-      { name: "Price Lists & Offers", starter: false, professional: true, enterprise: true },
-      { name: "Sales Commission", starter: false, professional: true, enterprise: true },
-      { name: "Installment Management", starter: false, professional: false, enterprise: true },
-    ],
-  },
-  {
-    name: "Inventory & Procurement",
-    features: [
-      { name: "Single-Store Inventory", starter: true, professional: true, enterprise: true },
-      { name: "Multi-Warehouse", starter: false, professional: true, enterprise: true },
-      { name: "Batch & Serial Tracking", starter: false, professional: true, enterprise: true },
-      { name: "Purchase Orders", starter: true, professional: true, enterprise: true },
-      { name: "Supplier Management", starter: true, professional: true, enterprise: true },
-      { name: "Automated Reorder Points", starter: false, professional: true, enterprise: true },
-    ],
-  },
-  {
-    name: "Finance & Accounting",
-    features: [
-      { name: "Core Accounting", starter: true, professional: true, enterprise: true },
-      { name: "VAT Management", starter: true, professional: true, enterprise: true },
-      { name: "Bank Reconciliation", starter: false, professional: true, enterprise: true },
-      { name: "Cost Centers", starter: false, professional: true, enterprise: true },
-      { name: "Asset Management", starter: false, professional: false, enterprise: true },
-      { name: "Group Company Consolidation", starter: false, professional: false, enterprise: true },
-    ],
-  },
-  {
-    name: "CRM & Support",
-    features: [
-      { name: "Customer Database", starter: true, professional: true, enterprise: true },
-      { name: "Lead Management", starter: false, professional: true, enterprise: true },
-      { name: "Loyalty Points", starter: false, professional: true, enterprise: true },
-      { name: "Customer Segmentation", starter: false, professional: false, enterprise: true },
-    ],
-  },
-];
-
 export default function PricingSection() {
   const [showComparison, setShowComparison] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState("");
+  const [pricing, setPricing] = useState<any>(null);
+
+  useEffect(() => {
+    fetch("/api/pricing")
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.pricing) {
+          setPricing(data.pricing);
+        }
+      })
+      .catch(console.error);
+  }, []);
 
   const handleCTA = (planName: string) => {
     setSelectedPlan(planName);
     setDialogOpen(true);
   };
+
+  if (!pricing) {
+    return (
+      <section id="pricing" className="py-24 lg:py-32 bg-background flex justify-center min-h-[50vh]">
+        <div className="animate-pulse space-y-8 flex flex-col items-center w-full max-w-5xl px-6">
+          <div className="h-8 w-64 bg-slate-200 rounded mb-16 mt-8"></div>
+          <div className="grid md:grid-cols-3 gap-6 w-full">
+            <div className="bg-slate-100 rounded-2xl h-[28rem]"></div>
+            <div className="bg-slate-200 rounded-2xl h-[30rem] -mt-4 shadow-xl"></div>
+            <div className="bg-slate-100 rounded-2xl h-[28rem]"></div>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section id="pricing" className="py-24 lg:py-32 bg-background">
@@ -148,7 +73,7 @@ export default function PricingSection() {
 
         {/* Pricing Cards */}
         <div className="grid md:grid-cols-3 gap-6 lg:gap-8 max-w-5xl mx-auto mb-12">
-          {plans.map((plan, i) => (
+          {pricing.plans.map((plan: any, i: number) => (
             <motion.div
               key={plan.name}
               initial={{ opacity: 0, y: 24 }}
@@ -202,7 +127,7 @@ export default function PricingSection() {
               </div>
 
               <ul className="space-y-3 mb-8 flex-1">
-                {plan.features.map((feat) => (
+                {plan.features.map((feat: string) => (
                   <li key={feat} className="flex items-start gap-2.5">
                     <Check
                       className={`w-4 h-4 mt-0.5 shrink-0 ${plan.popular ? "text-primary-light" : "text-primary"
@@ -270,7 +195,7 @@ export default function PricingSection() {
                     </tr>
                   </thead>
                   <tbody>
-                    {comparisonCategories.map((cat) => (
+                    {pricing.comparisonCategories.map((cat: any) => (
                       <>
                         <tr key={cat.name} className="bg-slate-50/50">
                           <td
@@ -280,7 +205,7 @@ export default function PricingSection() {
                             {cat.name}
                           </td>
                         </tr>
-                        {cat.features.map((feat) => (
+                        {cat.features.map((feat: any) => (
                           <tr
                             key={feat.name}
                             className="border-b border-border/50 hover:bg-slate-50/30 transition-colors"

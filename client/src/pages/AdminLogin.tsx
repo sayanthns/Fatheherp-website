@@ -7,19 +7,19 @@ import { Lock, Loader2, Key, QrCode, User } from "lucide-react";
 
 export default function AdminLogin() {
     const [, setLocation] = useLocation();
-    
+
     // Login Types
     const [loginType, setLoginType] = useState<"user" | "super_admin">("user");
-    
+
     // Credentials
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [totpCode, setTotpCode] = useState("");
-    
+
     const [step, setStep] = useState<"login" | "setup">("login");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
-    
+
     // Setup 2FA
     const [qrCodeUrl, setQrCodeUrl] = useState("");
     const [secret, setSecret] = useState("");
@@ -30,7 +30,7 @@ export default function AdminLogin() {
         setLoading(true);
 
         try {
-            const payload = loginType === "super_admin" 
+            const payload = loginType === "super_admin"
                 ? { password, token: totpCode }
                 : { username, password };
 
@@ -43,7 +43,7 @@ export default function AdminLogin() {
 
             if (data.success) {
                 localStorage.setItem("adminToken", data.token);
-                setLocation("/admin/dashboard");
+                setLocation("/admin/dashboard", { replace: true });
             } else if (data.requiresSetup && loginType === "super_admin") {
                 handleSetupRequest();
             } else {
@@ -86,7 +86,7 @@ export default function AdminLogin() {
                         {step === "setup" ? <QrCode className="w-6 h-6 text-primary" /> : <Lock className="w-6 h-6 text-primary" />}
                     </div>
                 </div>
-                
+
                 <h2 className="text-2xl font-display font-bold text-center text-slate-900 mb-2">
                     {step === "setup" ? "Secure Your Account" : "Welcome Back"}
                 </h2>
@@ -113,7 +113,7 @@ export default function AdminLogin() {
                 <p className="text-center text-slate-500 mb-8 font-body text-sm">
                     {step === "setup"
                         ? "Scan this QR code with Google Authenticator, then enter the 6-digit code below to finish setup."
-                        : loginType === "super_admin" 
+                        : loginType === "super_admin"
                             ? "Enter the global master password and 2FA code."
                             : "Sign in with your assigned dashboard credentials."}
                 </p>
@@ -130,9 +130,9 @@ export default function AdminLogin() {
                 )}
 
                 <form onSubmit={handleLogin} className="space-y-5">
-                    
+
                     {step === "login" && loginType === "user" && (
-                         <div className="space-y-1.5">
+                        <div className="space-y-1.5">
                             <Label htmlFor="username">Username</Label>
                             <div className="relative">
                                 <User className="absolute left-3 top-3.5 h-4 w-4 text-slate-400" />

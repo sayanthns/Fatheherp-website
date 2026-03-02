@@ -85,7 +85,7 @@ export default function AdminDashboard() {
     useEffect(() => {
         const token = localStorage.getItem("adminToken");
         if (!token) {
-            setLocation("/admin");
+            setLocation("/admin", { replace: true });
             return;
         }
 
@@ -95,7 +95,7 @@ export default function AdminDashboard() {
             setAdminRole(payload.role);
             setAdminUsername(payload.username || "Admin");
         } catch (e) {
-            setLocation("/admin");
+            setLocation("/admin", { replace: true });
             return;
         }
 
@@ -188,7 +188,7 @@ export default function AdminDashboard() {
 
     const handleLogout = () => {
         localStorage.removeItem("adminToken");
-        setLocation("/admin");
+        setLocation("/admin", { replace: true });
     };
 
     const handleStatusUpdate = async (leadId: string, newStatus: string) => {

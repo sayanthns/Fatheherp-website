@@ -27,6 +27,15 @@ async function startServer() {
     res.sendFile(path.join(staticPath, "index.html"));
   });
 
+  // Global Error Handler for Malformed URIs (e.g., /%c0)
+  app.use((err: any, _req: express.Request, res: express.Response, next: express.NextFunction) => {
+    if (err instanceof URIError) {
+      console.warn("Caught URIError:", err.message);
+      return res.status(400).send("Bad Request: Malformed URI");
+    }
+    next(err);
+  });
+
   const port = process.env.PORT || 5050;
 
   server.listen(port, () => {

@@ -14,8 +14,9 @@ interface Lead {
     location: string;
     source?: string;
     date: string;
-    status?: "New" | "Contacted" | "Converted" | "Spam" | "Failed";
+    status?: "New" | "Contacted" | "Converted" | "Spam" | "Failed" | "Trash";
     comment?: string;
+    statusUpdatedAt?: string;
 }
 
 interface Testimonial {
@@ -41,7 +42,7 @@ export default function AdminDashboard() {
     const [error, setError] = useState("");
     const [statusFilter, setStatusFilter] = useState("All");
     const [updatingId, setUpdatingId] = useState<string | null>(null);
-    const [activeTab, setActiveTab] = useState<"dashboard" | "leads" | "testimonials" | "users" | "settings">("dashboard");
+    const [activeTab, setActiveTab] = useState<"dashboard" | "leads" | "testimonials" | "users" | "settings" | "trash">("dashboard");
     const [sidebarOpen, setSidebarOpen] = useState(true);
 
     // Authentication Context
@@ -68,6 +69,11 @@ export default function AdminDashboard() {
     // Settings Modal
     const [settingsData, setSettingsData] = useState({ calendlyUrl: "" });
     const [savingSettings, setSavingSettings] = useState(false);
+
+    // Marketing URL Builder State
+    const [trackedUrlDestination, setTrackedUrlDestination] = useState("https://docs.enfono.com");
+    const [trackedUrlCampaign, setTrackedUrlCampaign] = useState("spring_sale_2025");
+    const [trackedUrlSource, setTrackedUrlSource] = useState("facebook");
 
     // Testimonials
     const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
@@ -262,11 +268,14 @@ export default function AdminDashboard() {
         }).format(d);
     };
 
+    const activeLeads = leads.filter(l => (l.status as string) !== "Trash");
+    const trashLeads = leads.filter(l => (l.status as string) === "Trash");
+
     const metrics = {
-        total: leads.length,
-        new: leads.filter(l => (l.status || "New") === "New").length,
-        contacted: leads.filter(l => l.status === "Contacted").length,
-        converted: leads.filter(l => l.status === "Converted").length,
+        total: activeLeads.length,
+        new: activeLeads.filter(l => (l.status || "New") === "New").length,
+        contacted: activeLeads.filter(l => l.status === "Contacted").length,
+        converted: activeLeads.filter(l => l.status === "Converted").length,
     };
 
     // Calculate visits per day for chart
@@ -292,15 +301,20 @@ export default function AdminDashboard() {
         }));
     };
 
-    const filteredLeads = statusFilter === "All" ? leads : leads.filter(l => (l.status || "New") === statusFilter);
+    const filteredLeads = statusFilter === "All" ? activeLeads : activeLeads.filter(l => (l.status || "New") === statusFilter);
     const totalPages = Math.max(1, Math.ceil(filteredLeads.length / itemsPerPage));
     const paginatedLeads = filteredLeads.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+    // Trash Pagination
+    const trashTotalPages = Math.max(1, Math.ceil(trashLeads.length / itemsPerPage));
+    const paginatedTrash = trashLeads.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
     // Sidebar Navigation Items
     const navItems = [
         { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
         { id: "leads", label: "Leads", icon: Inbox },
         { id: "testimonials", label: "Testimonials", icon: Star },
+        { id: "trash", label: "Trash Bin", icon: Trash2 },
         ...(adminRole === "super_admin" ? [{ id: "users", label: "Users", icon: Users }] : []),
         { id: "settings", label: "Settings", icon: Settings },
     ] as const;
@@ -325,7 +339,7 @@ export default function AdminDashboard() {
                     {navItems.map(item => (
                         <button
                             key={item.id}
-                            onClick={() => setActiveTab(item.id)}
+                            onClick={() => setActiveTab(item.id as "dashboard" | "leads" | "testimonials" | "users" | "settings" | "trash")}
                             className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${activeTab === item.id ? 'bg-blue-600 text-white shadow-md' : 'text-slate-300 hover:bg-white/10 hover:text-white'}`}
                         >
                             <item.icon className={`w-5 h-5 ${activeTab === item.id ? 'text-white' : 'text-slate-400'}`} />
@@ -375,7 +389,7 @@ export default function AdminDashboard() {
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
                                 <div className="lg:col-span-2 bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
                                     <h3 className="font-display font-semibold text-lg text-slate-800 mb-6">Website Visits (Last 7 Days)</h3>
                                     <div className="h-72">
@@ -398,7 +412,29 @@ export default function AdminDashboard() {
                                         <Activity className="w-8 h-8" />
                                     </div>
                                     <h3 className="text-4xl font-display font-bold text-slate-900 mb-2">{analytics.visits.length}</h3>
-                                    <p className="text-slate-500 font-medium">Total Lifetime Page Views</p>
+                                    <p className="text-slate-500 font-medium">Total Lifetime Views</p>
+                                </div>
+                                <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 flex flex-col h-full max-h-[380px]">
+                                    <h3 className="font-display font-semibold text-lg text-slate-800 mb-4">Top View Sources</h3>
+                                    <div className="flex-1 overflow-y-auto pr-2 space-y-3">
+                                        {(() => {
+                                            const sourceMap = analytics.visits.reduce((acc, v: any) => {
+                                                const srcName = v.source ? (v.campaign ? `${v.source} (${v.campaign})` : v.source) : "Direct / Organic";
+                                                acc[srcName] = (acc[srcName] || 0) + 1;
+                                                return acc;
+                                            }, {} as Record<string, number>);
+                                            const sortedSources = Object.entries(sourceMap).sort((a, b) => b[1] - a[1]).slice(0, 5);
+
+                                            if (sortedSources.length === 0) return <p className="text-sm text-slate-500 italic">No attribution data yet.</p>;
+
+                                            return sortedSources.map(([name, count], i) => (
+                                                <div key={i} className="flex items-center justify-between text-sm p-3 rounded-lg bg-slate-50 border border-slate-100">
+                                                    <span className="font-medium text-slate-700 truncate mr-2" title={name}>{name}</span>
+                                                    <span className="font-bold text-primary bg-primary/10 px-2.5 py-1 rounded-full">{count as number}</span>
+                                                </div>
+                                            ));
+                                        })()}
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -499,23 +535,38 @@ export default function AdminDashboard() {
                                                         </div>
                                                     </td>
                                                     <td className="px-6 py-4 align-top">
-                                                        <select
-                                                            value={lead.status || "New"}
-                                                            disabled={updatingId === lead.id}
-                                                            onChange={(e) => handleStatusUpdate(lead.id, e.target.value)}
-                                                            className={`text-sm border rounded-lg px-3 py-1.5 outline-none font-medium transition-colors w-full ${(lead.status || "New") === "New" ? "bg-amber-50 text-amber-700 border-amber-200" :
-                                                                lead.status === "Contacted" ? "bg-blue-50 text-blue-700 border-blue-200" :
-                                                                    lead.status === "Converted" ? "bg-green-50 text-green-700 border-green-200" :
-                                                                        lead.status === "Spam" ? "bg-slate-100 text-slate-600 border-slate-300" :
-                                                                            "bg-red-50 text-red-700 border-red-200"
-                                                                }`}
-                                                        >
-                                                            <option value="New">New</option>
-                                                            <option value="Contacted">Contacted</option>
-                                                            <option value="Converted">Converted</option>
-                                                            <option value="Spam">Spam</option>
-                                                            <option value="Failed">Failed</option>
-                                                        </select>
+                                                        <div className="flex items-start gap-2">
+                                                            <select
+                                                                value={lead.status || "New"}
+                                                                disabled={updatingId === lead.id}
+                                                                onChange={(e) => handleStatusUpdate(lead.id, e.target.value)}
+                                                                className={`text-sm border rounded-lg px-3 py-1.5 outline-none font-medium transition-colors w-full ${(lead.status || "New") === "New" ? "bg-amber-50 text-amber-700 border-amber-200" :
+                                                                    lead.status === "Contacted" ? "bg-blue-50 text-blue-700 border-blue-200" :
+                                                                        lead.status === "Converted" ? "bg-green-50 text-green-700 border-green-200" :
+                                                                            lead.status === "Spam" ? "bg-slate-100 text-slate-600 border-slate-300" :
+                                                                                "bg-red-50 text-red-700 border-red-200"
+                                                                    }`}
+                                                            >
+                                                                <option value="New">New</option>
+                                                                <option value="Contacted">Contacted</option>
+                                                                <option value="Converted">Converted</option>
+                                                                <option value="Spam">Spam</option>
+                                                                <option value="Failed">Failed</option>
+                                                            </select>
+                                                            <button
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    if (window.confirm("Are you sure you want to move this lead to the Trash?")) {
+                                                                        handleStatusUpdate(lead.id, "Trash");
+                                                                    }
+                                                                }}
+                                                                disabled={updatingId === lead.id}
+                                                                title="Move to Trash"
+                                                                className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors border border-transparent hover:border-red-100 shrink-0"
+                                                            >
+                                                                <Trash2 className="w-4 h-4" />
+                                                            </button>
+                                                        </div>
                                                     </td>
                                                 </tr>
                                             ))
@@ -540,6 +591,86 @@ export default function AdminDashboard() {
                                     </div>
                                 </div>
                             )}
+                        </div>
+                    )}
+
+                    {activeTab === "trash" && (
+                        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden flex flex-col h-[calc(100vh-8rem)]">
+                            <div className="px-6 py-4 flex items-center justify-between border-b border-slate-200 bg-slate-50/50 shrink-0">
+                                <div>
+                                    <h2 className="font-semibold text-slate-800">Trash Bin</h2>
+                                    <p className="text-sm text-slate-500">Leads here are automatically purged after 30 days.</p>
+                                </div>
+                                <Button variant="outline" size="sm" onClick={fetchLeads} disabled={loading} className="gap-2">
+                                    <RefreshCcw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} /> Refresh
+                                </Button>
+                            </div>
+
+                            <div className="flex-1 overflow-auto">
+                                <table className="w-full text-left border-collapse">
+                                    <thead className="sticky top-0 z-10 bg-slate-50 border-b border-slate-200">
+                                        <tr>
+                                            <th className="px-6 py-3 font-body font-semibold text-slate-700 text-sm whitespace-nowrap">Contact Info</th>
+                                            <th className="px-6 py-3 font-body font-semibold text-slate-700 text-sm whitespace-nowrap">Trashed Date</th>
+                                            <th className="px-6 py-3 font-body font-semibold text-slate-700 text-sm whitespace-nowrap text-right">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-slate-100">
+                                        {loading ? (
+                                            <tr><td colSpan={3} className="px-6 py-8 text-center text-slate-500">Loading trash...</td></tr>
+                                        ) : paginatedTrash.length === 0 ? (
+                                            <tr><td colSpan={3} className="px-6 py-12 text-center text-slate-500">Trash is empty.</td></tr>
+                                        ) : (
+                                            paginatedTrash.map((lead) => (
+                                                <tr key={lead.id} className="hover:bg-slate-50/50 transition-colors group">
+                                                    <td className="px-6 py-4 align-top">
+                                                        <div className="font-semibold text-slate-900 text-sm">{lead.name}</div>
+                                                        <div className="text-slate-500 text-xs mt-1">{lead.phoneNumber || lead.phone || lead.businessName}</div>
+                                                    </td>
+                                                    <td className="px-6 py-4 align-top text-sm text-slate-600">
+                                                        {lead.statusUpdatedAt ? formatDate(lead.statusUpdatedAt) : formatDate(lead.date)}
+                                                    </td>
+                                                    <td className="px-6 py-4 align-top text-right space-x-2 flex justify-end">
+                                                        <Button
+                                                            size="sm"
+                                                            variant="outline"
+                                                            className="text-primary hover:bg-primary/5"
+                                                            onClick={async () => {
+                                                                if (window.confirm("Restore this lead back to 'New' status?")) {
+                                                                    handleStatusUpdate(lead.id, "New");
+                                                                }
+                                                            }}
+                                                            disabled={updatingId === lead.id}
+                                                        >
+                                                            Restore
+                                                        </Button>
+                                                        {adminRole === "super_admin" && (
+                                                            <Button
+                                                                size="sm"
+                                                                variant="destructive"
+                                                                onClick={async () => {
+                                                                    if (!window.confirm("WARNING: This will permanently delete the lead from the database. This action cannot be undone. Proceed?")) return;
+                                                                    try {
+                                                                        const res = await fetch(`/api/leads/${lead.id}`, {
+                                                                            method: "DELETE",
+                                                                            headers: getHeaders()
+                                                                        });
+                                                                        if (res.ok) fetchLeads();
+                                                                    } catch (e) {
+                                                                        console.error(e);
+                                                                    }
+                                                                }}
+                                                            >
+                                                                Delete Permanently
+                                                            </Button>
+                                                        )}
+                                                    </td>
+                                                </tr>
+                                            ))
+                                        )}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     )}
 
@@ -679,6 +810,78 @@ export default function AdminDashboard() {
                                     >
                                         {savingSettings ? "Saving..." : "Save Configuration"}
                                     </Button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {activeTab === "settings" && (
+                        <div className="max-w-2xl bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mt-6">
+                            <div className="p-6 border-b border-slate-100 bg-blue-50/30">
+                                <h2 className="text-lg font-bold text-slate-800 mb-1">Marketing URL Builder</h2>
+                                <p className="text-sm text-slate-500">Generate trackable links to use in your Facebook/Google ad campaigns. The system will automatically tag leads arriving through these links.</p>
+                            </div>
+                            <div className="p-6 space-y-5">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div className="space-y-1.5">
+                                        <label className="text-xs font-semibold text-slate-700 uppercase tracking-wide">Destination URL</label>
+                                        <input
+                                            type="url"
+                                            value={trackedUrlDestination}
+                                            onChange={e => setTrackedUrlDestination(e.target.value)}
+                                            className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50"
+                                            placeholder="https://docs.enfono.com"
+                                        />
+                                    </div>
+                                    <div className="space-y-1.5">
+                                        <label className="text-xs font-semibold text-slate-700 uppercase tracking-wide">Ad Source (Platform)</label>
+                                        <select
+                                            value={trackedUrlSource}
+                                            onChange={e => setTrackedUrlSource(e.target.value)}
+                                            className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 bg-white"
+                                        >
+                                            <option value="facebook">Facebook Ads</option>
+                                            <option value="instagram">Instagram Ads</option>
+                                            <option value="google">Google Ads</option>
+                                            <option value="linkedin">LinkedIn Ads</option>
+                                            <option value="twitter">X / Twitter</option>
+                                            <option value="newsletter">Email Newsletter</option>
+                                            <option value="custom">Custom Source</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div className="space-y-1.5">
+                                    <label className="text-xs font-semibold text-slate-700 uppercase tracking-wide">Campaign Name (Optional)</label>
+                                    <input
+                                        type="text"
+                                        value={trackedUrlCampaign}
+                                        onChange={e => setTrackedUrlCampaign(e.target.value)}
+                                        className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50"
+                                        placeholder="e.g., spring_sale_2025"
+                                    />
+                                </div>
+
+                                <div className="pt-4 mt-4 border-t border-slate-100">
+                                    <label className="text-xs font-semibold text-slate-700 uppercase tracking-wide mb-2 block">Generated Tracking Link</label>
+                                    <div className="flex gap-2">
+                                        <input
+                                            type="text"
+                                            readOnly
+                                            value={`${trackedUrlDestination}${trackedUrlDestination.includes('?') ? '&' : '?'}utm_source=${trackedUrlSource}${trackedUrlCampaign ? `&utm_campaign=${encodeURIComponent(trackedUrlCampaign)}` : ''}`}
+                                            className="flex-1 px-3 py-2.5 text-sm font-mono text-slate-600 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none"
+                                        />
+                                        <Button
+                                            variant="outline"
+                                            onClick={() => {
+                                                const url = `${trackedUrlDestination}${trackedUrlDestination.includes('?') ? '&' : '?'}utm_source=${trackedUrlSource}${trackedUrlCampaign ? `&utm_campaign=${encodeURIComponent(trackedUrlCampaign)}` : ''}`;
+                                                navigator.clipboard.writeText(url);
+                                                alert("Tracking URL copied to clipboard!");
+                                            }}
+                                            className="shrink-0 bg-white"
+                                        >
+                                            Copy Link
+                                        </Button>
+                                    </div>
                                 </div>
                             </div>
                         </div>

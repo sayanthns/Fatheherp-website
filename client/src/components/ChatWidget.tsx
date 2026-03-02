@@ -70,6 +70,15 @@ export default function ChatWidget() {
                 nextMsg = "Thank you! I've sent your details to our team. An expert will contact you soon.";
                 setStep(4);
 
+                // Calculate Tracking Source
+                const adSource = sessionStorage.getItem('ad_source');
+                const adCampaign = sessionStorage.getItem('ad_campaign');
+                let finalSource = "Chatbot";
+                if (adSource) {
+                    finalSource = `Chatbot via ${adSource}`;
+                    if (adCampaign) finalSource += ` [${adCampaign}]`;
+                }
+
                 // Send to backend
                 fetch("/api/leads", {
                     method: "POST",
@@ -79,7 +88,7 @@ export default function ChatWidget() {
                         businessName: data.businessName,
                         phoneNumber: data.phone,
                         location: data.location,
-                        source: "Chatbot"
+                        source: finalSource
                     }),
                 }).catch(err => console.error("Failed to send chat lead", err));
             }

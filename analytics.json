@@ -1,0 +1,37 @@
+{
+  "visits": [
+    {
+      "date": "2026-03-02T00:23:05.801Z",
+      "path": "/",
+      "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+    },
+    {
+      "date": "2026-03-02T00:33:18.520Z",
+      "path": "/",
+      "browser": "Test Client",
+      "source": "facebook",
+      "campaign": "spring_sale"
+    },
+    {
+      "date": "2026-03-02T00:39:10.575Z",
+      "path": "/",
+      "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36",
+      "source": "linkedin",
+      "campaign": "winter25"
+    },
+    {
+      "date": "2026-03-02T00:47:50.567Z",
+      "path": "/",
+      "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36",
+      "source": "twitter",
+      "campaign": "winter25"
+    },
+    {
+      "date": "2026-03-02T00:48:34.072Z",
+      "path": "/",
+      "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36",
+      "source": "twitter",
+      "campaign": "winter25"
+    }
+  ]
+}

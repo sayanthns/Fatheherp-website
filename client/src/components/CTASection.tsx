@@ -24,15 +24,23 @@ export default function CTASection() {
     setLoading(true);
 
     try {
+      const adSource = sessionStorage.getItem('ad_source');
+      const adCampaign = sessionStorage.getItem('ad_campaign');
+      let finalSource = "CTA Demo Form";
+      if (adSource) {
+        finalSource = `CTA Demo Form via ${adSource}`;
+        if (adCampaign) finalSource += ` [${adCampaign}]`;
+      }
+
       await fetch("/api/leads", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: formData.name,
           businessName: formData.businessName,
-          phoneNumber: formData.phone, // mapping to match other models
-          source: "CTA Demo Form",
-          location: formData.message // Using message as context
+          phoneNumber: formData.phone,
+          source: finalSource,
+          location: formData.message
         }),
       });
       toast.success("Thank you! Our team will contact you within 24 hours.");

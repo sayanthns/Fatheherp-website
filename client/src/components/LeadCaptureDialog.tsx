@@ -30,10 +30,19 @@ export function LeadCaptureDialog({
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
+            const adSource = sessionStorage.getItem('ad_source');
+            const adCampaign = sessionStorage.getItem('ad_campaign');
+            let finalSource = source;
+
+            if (adSource) {
+                finalSource = `${source} via ${adSource}`;
+                if (adCampaign) finalSource += ` [${adCampaign}]`;
+            }
+
             await fetch("/api/leads", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ ...formData, source }),
+                body: JSON.stringify({ ...formData, source: finalSource }),
             });
         } catch (error) {
             console.error("Failed to submit lead", error);

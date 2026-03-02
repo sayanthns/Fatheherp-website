@@ -48,17 +48,19 @@
     "location": "bncasc",
     "date": "2026-03-01T21:18:20.211Z",
     "id": "1772399900212",
-    "status": "Contacted",
-    "comment": "not good\nbad"
+    "status": "Trash",
+    "comment": "not good\nbad",
+    "statusUpdatedAt": "2026-03-02T00:51:41.641Z"
   },
   {
     "name": "Sayanth NS",
     "businessName": "Deepflow technologies Pvt Ltd",
     "phoneNumber": "+917994897166",
     "location": "procnh",
-    "status": "New",
+    "status": "Trash",
     "date": "2026-03-01T21:37:10.926Z",
-    "id": "1772401030926"
+    "id": "1772401030926",
+    "statusUpdatedAt": "2026-03-02T00:34:35.038Z"
   },
   {
     "name": "Sayanth NS",
@@ -66,9 +68,10 @@
     "phoneNumber": "+917994897166",
     "location": "Manjeri",
     "source": "Navigation (Free Trial)",
-    "status": "New",
+    "status": "Trash",
     "date": "2026-03-01T21:53:20.490Z",
-    "id": "1772402000490"
+    "id": "1772402000490",
+    "statusUpdatedAt": "2026-03-02T00:30:18.179Z"
   },
   {
     "name": "Sayanth NS",
@@ -76,19 +79,10 @@
     "phoneNumber": "01111111111",
     "location": "Manjeri",
     "source": "Professional Plan (Pricing Page)",
-    "status": "Failed",
+    "status": "Trash",
     "date": "2026-03-01T21:53:42.620Z",
     "id": "1772402022620",
-    "comment": "nil"
-  },
-  {
-    "name": "Sayanth NS",
-    "businessName": "Deepflow technologies Pvt Ltd",
-    "phoneNumber": "+966573528619",
-    "source": "CTA Demo Form",
-    "location": "sdsad",
-    "status": "New",
-    "date": "2026-03-01T22:26:31.773Z",
-    "id": "1772403991773"
+    "comment": "nil",
+    "statusUpdatedAt": "2026-03-02T00:28:50.648Z"
   }
 ]

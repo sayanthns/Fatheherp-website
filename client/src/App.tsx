@@ -14,6 +14,16 @@ function Router() {
   const [location] = useLocation();
 
   useEffect(() => {
+    // Phase 7: Capture Ad Tracking Params
+    const searchParams = new URLSearchParams(window.location.search);
+    const utmSource = searchParams.get('utm_source') || searchParams.get('ref');
+    const utmCampaign = searchParams.get('utm_campaign');
+
+    if (utmSource) {
+      sessionStorage.setItem('ad_source', utmSource);
+      if (utmCampaign) sessionStorage.setItem('ad_campaign', utmCampaign);
+    }
+
     // Only track public facing routes
     if (!location.startsWith("/admin")) {
       fetch("/api/analytics/visit", {
@@ -21,7 +31,9 @@ function Router() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           path: location,
-          browser: navigator.userAgent
+          browser: navigator.userAgent,
+          source: sessionStorage.getItem('ad_source'),
+          campaign: sessionStorage.getItem('ad_campaign')
         })
       }).catch(console.error);
     }

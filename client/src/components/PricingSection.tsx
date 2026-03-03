@@ -102,13 +102,13 @@ export default function PricingSection() {
                   className={`font-display font-bold text-lg mb-1 ${plan.popular ? "text-white" : "text-foreground"
                     }`}
                 >
-                  {isRTL ? plan.name_ar : plan.name}
+                  {isRTL ? (plan.name_ar || plan.name) : plan.name}
                 </h3>
                 <p
                   className={`text-sm font-body ${plan.popular ? "text-slate-300" : "text-muted-foreground"
                     }`}
                 >
-                  {isRTL ? plan.description_ar : plan.description}
+                  {isRTL ? (plan.description_ar || plan.description) : plan.description}
                 </p>
               </div>
 
@@ -118,14 +118,14 @@ export default function PricingSection() {
                     className={`font-mono font-bold text-4xl ${plan.popular ? "text-white" : "text-foreground"
                       }`}
                   >
-                    {isRTL ? plan.price_ar : plan.price}
+                    {isRTL ? (plan.price_ar || plan.price) : plan.price}
                   </span>
                 </div>
                 <span
                   className={`text-sm font-body ${plan.popular ? "text-slate-400" : "text-muted-foreground"
                     }`}
                 >
-                  {isRTL ? plan.period_ar : plan.period}
+                  {isRTL ? (plan.period_ar || plan.period) : plan.period}
                 </span>
               </div>
 
@@ -151,9 +151,9 @@ export default function PricingSection() {
                   ? "bg-primary hover:bg-primary-light text-white shadow-lg shadow-primary/30"
                   : "bg-navy hover:bg-navy-light text-white"
                   }`}
-                onClick={() => handleCTA(isRTL ? plan.name_ar : plan.name, i)}
+                onClick={() => handleCTA(isRTL ? (plan.name_ar || plan.name) : plan.name, i)}
               >
-                {isRTL ? plan.cta_ar : plan.cta}
+                {isRTL ? (plan.cta_ar || plan.cta) : plan.cta}
               </Button>
             </motion.div>
           ))}

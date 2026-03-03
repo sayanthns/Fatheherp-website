@@ -261,6 +261,25 @@
         "comparison_toggle": "Explore Comprehensive Feature Comparison",
         "comparison_feature": "Feature"
     },
+    "scale": {
+        "title": "Scale Your Business with Confidence",
+        "description": "Start with Starter and grow into Professional or Enterprise as your business scales. Your data moves seamlessly — no re-implementation needed. Pay only for what you use.",
+        "plans": {
+            "starter": "Starter",
+            "professional": "Professional",
+            "enterprise": "Enterprise"
+        },
+        "benefits": {
+            "no_contracts": "Upgrade anytime, no long-term contracts",
+            "migration": "Seamless data migration between plans",
+            "onboarding": "Dedicated onboarding support",
+            "support": "Priority support as you grow"
+        }
+    },
+    "manus": {
+        "login_desc": "Please login with Manus to continue",
+        "login_btn": "Login with Manus"
+    },
     "testimonials": {
         "badge": "Testimonials",
         "title": "Trusted by Saudi Traders",

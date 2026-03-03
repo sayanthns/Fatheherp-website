@@ -2,9 +2,13 @@
   "plans": [
     {
       "name": "Starter",
+      "name_ar": "المبتدئ",
       "price": "2,499",
+      "price_ar": "2,499",
       "period": "SAR / Business / Year",
+      "period_ar": "ريال / منشأة / سنة",
       "description": "For small traders and single-store businesses getting started with digital operations.",
+      "description_ar": "للتجار الصغار والشركات ذات المتجر الواحد التي تبدأ عملياتها الرقمية.",
       "popular": false,
       "features": [
         "ZATCA Phase 2 E-Invoicing",
@@ -16,13 +20,28 @@
         "15 Support Tickets / Year",
         "Email Support"
       ],
-      "cta": "Get Started"
+      "features_ar": [
+        "الفوترة الإلكترونية (ZATCA) المرحلة الثانية",
+        "المحاسبة الأساسية وضريبة القيمة المضافة",
+        "المبيعات وعروض الأسعار",
+        "منشأة تجارية واحدة",
+        "مخزون لمتجر واحد",
+        "مستخدم واحد",
+        "15 تذكرة دعم / سنة",
+        "دعم عبر البريد الإلكتروني"
+      ],
+      "cta": "Get Started",
+      "cta_ar": "ابدأ الآن"
     },
     {
       "name": "Professional",
+      "name_ar": "المحترف",
       "price": "5,499",
+      "price_ar": "5,499",
       "period": "SAR / Business / Year",
+      "period_ar": "ريال / منشأة / سنة",
       "description": "For growing traders with multiple stores, advanced inventory needs, and CRM requirements.",
+      "description_ar": "للتجار المتنامين ذوي المتاجر المتعددة، واحتياجات المخزون المتقدمة، ومتطلبات إدارة علاقات العملاء.",
       "popular": true,
       "features": [
         "Everything in Starter",
@@ -34,13 +53,28 @@
         "40 Support Tickets / Year",
         "Priority Phone & Email Support"
       ],
-      "cta": "Get Started"
+      "features_ar": [
+        "كل ما في باقة المبتدئ",
+        "حتى 3 فروع تجارية",
+        "إدارة مستودعات متعددة",
+        "محاسبة تكاليف متقدمة",
+        "إدارة علاقات العملاء والعملاء المحتملين",
+        "3 مستخدمين",
+        "40 تذكرة دعم / سنة",
+        "دعم فني عبر الهاتف والبريد"
+      ],
+      "cta": "Get Started",
+      "cta_ar": "ابدأ الآن"
     },
     {
       "name": "Enterprise",
+      "name_ar": "المؤسسات",
       "price": "Custom",
+      "price_ar": "حسب الطلب",
       "period": "Tailored Pricing",
+      "period_ar": "أسعار مخصصة",
       "description": "For large trading groups and holding companies needing unlimited power and custom integrations.",
+      "description_ar": "للمجموعات التجارية الكبيرة والشركات القابضة التي تحتاج إلى قوة غير محدودة وتكاملات مخصصة.",
       "popular": false,
       "features": [
         "Everything in Professional",
@@ -52,45 +86,63 @@
         "24/7 Dedicated Support",
         "Dedicated Account Manager"
       ],
-      "cta": "Request Quote"
+      "features_ar": [
+        "كل ما في باقة المحترف",
+        "عدد غير محدود من المنشآت",
+        "وحدات الموارد البشرية والرواتب",
+        "إدارة مشاريع متقدمة",
+        "تكاملات مخصصة وواجهة برمجة تطبيقات (API)",
+        "عدد غير محدود من المستخدمين والفروع",
+        "دعم مخصص على مدار الساعة",
+        "مدير حساب مخصص"
+      ],
+      "cta": "Request Quote",
+      "cta_ar": "اطلب عرض سعر"
     }
   ],
   "comparisonCategories": [
     {
       "name": "Sales Management",
+      "name_ar": "إدارة المبيعات",
       "features": [
         {
           "name": "E-Invoicing (ZATCA Phase 2)",
+          "name_ar": "الفوترة الإلكترونية (ZATCA المرحلة 2)",
           "starter": true,
           "professional": true,
           "enterprise": true
         },
         {
           "name": "Quotations & Sales Orders",
+          "name_ar": "عروض الأسعار وأوامر المبيعات",
           "starter": true,
           "professional": true,
           "enterprise": true
         },
         {
           "name": "Cloud POS",
+          "name_ar": "نقاط البيع السحابية",
           "starter": false,
           "professional": true,
           "enterprise": true
         },
         {
           "name": "Price Lists & Offers",
+          "name_ar": "قوائم الأسعار والعروض",
           "starter": false,
           "professional": true,
           "enterprise": true
         },
         {
           "name": "Sales Commission",
+          "name_ar": "عمولات المبيعات",
           "starter": false,
           "professional": true,
           "enterprise": true
         },
         {
           "name": "Installment Management",
+          "name_ar": "إدارة الأقساط",
           "starter": false,
           "professional": false,
           "enterprise": true
@@ -99,39 +151,46 @@
     },
     {
       "name": "Inventory & Procurement",
+      "name_ar": "المخزون والمشتريات",
       "features": [
         {
           "name": "Single-Store Inventory",
+          "name_ar": "مخزون لمتجر واحد",
           "starter": true,
           "professional": true,
           "enterprise": true
         },
         {
           "name": "Multi-Warehouse",
+          "name_ar": "مستودعات متعددة",
           "starter": false,
           "professional": true,
           "enterprise": true
         },
         {
           "name": "Batch & Serial Tracking",
+          "name_ar": "تتبع الدفعات والأرقام التسلسلية",
           "starter": false,
           "professional": true,
           "enterprise": true
         },
         {
           "name": "Purchase Orders",
+          "name_ar": "أوامر الشراء",
           "starter": true,
           "professional": true,
           "enterprise": true
         },
         {
           "name": "Supplier Management",
+          "name_ar": "إدارة الموردين",
           "starter": true,
           "professional": true,
           "enterprise": true
         },
         {
           "name": "Automated Reorder Points",
+          "name_ar": "نقاط إعادة طلب تلقائية",
           "starter": false,
           "professional": true,
           "enterprise": true
@@ -140,39 +199,46 @@
     },
     {
       "name": "Finance & Accounting",
+      "name_ar": "المالية والمحاسبة",
       "features": [
         {
           "name": "Core Accounting",
+          "name_ar": "المحاسبة الأساسية",
           "starter": true,
           "professional": true,
           "enterprise": true
         },
         {
           "name": "VAT Management",
+          "name_ar": "إدارة ضريبة القيمة المضافة",
           "starter": true,
           "professional": true,
           "enterprise": true
         },
         {
           "name": "Bank Reconciliation",
+          "name_ar": "التسوية البنكية",
           "starter": false,
           "professional": true,
           "enterprise": true
         },
         {
           "name": "Cost Centers",
+          "name_ar": "مراكز التكلفة",
           "starter": false,
           "professional": true,
           "enterprise": true
         },
         {
           "name": "Asset Management",
+          "name_ar": "إدارة الأصول",
           "starter": false,
           "professional": false,
           "enterprise": true
         },
         {
           "name": "Group Company Consolidation",
+          "name_ar": "دمج حسابات المجموعة",
           "starter": false,
           "professional": false,
           "enterprise": true
@@ -181,36 +247,37 @@
     },
     {
       "name": "CRM & Support",
+      "name_ar": "إدارة علاقات العملاء والدعم",
       "features": [
         {
           "name": "Customer Database",
+          "name_ar": "قاعدة بيانات العملاء",
           "starter": true,
           "professional": true,
           "enterprise": true
         },
         {
           "name": "Lead Management",
+          "name_ar": "إدارة العملاء المحتملين",
           "starter": false,
           "professional": true,
           "enterprise": true
         },
         {
           "name": "Loyalty Points",
+          "name_ar": "نقاط الولاء",
           "starter": false,
           "professional": false,
           "enterprise": true
         },
         {
           "name": "Customer Segmentation",
+          "name_ar": "تصنيف العملاء",
           "starter": false,
           "professional": false,
           "enterprise": true
         }
       ]
-    },
-    {
-      "name": "New Category",
-      "features": []
     }
   ]
 }

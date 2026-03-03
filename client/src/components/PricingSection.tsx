@@ -4,15 +4,19 @@
  * Feature comparison table below
  */
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Check, X, ChevronDown, ChevronUp, Star } from "lucide-react";
 import { LeadCaptureDialog } from "@/components/LeadCaptureDialog";
 
 export default function PricingSection() {
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === 'ar';
   const [showComparison, setShowComparison] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState("");
+  const [dialogType, setDialogType] = useState<"trial" | "demo">("trial"); // Added dialogType state
   const [pricing, setPricing] = useState<any>(null);
 
   useEffect(() => {
@@ -26,8 +30,9 @@ export default function PricingSection() {
       .catch(console.error);
   }, []);
 
-  const handleCTA = (planName: string) => {
+  const handleCTA = (planName: string, planIdx: number) => {
     setSelectedPlan(planName);
+    setDialogType(planIdx === 2 ? "demo" : "trial"); // Assuming the 3rd plan (index 2) is Enterprise/Demo
     setDialogOpen(true);
   };
 
@@ -47,7 +52,7 @@ export default function PricingSection() {
   }
 
   return (
-    <section id="pricing" className="py-24 lg:py-32 bg-background">
+    <section id="pricing" className={`py-24 lg:py-32 bg-background ${isRTL ? 'rtl' : 'ltr'}`}>
       <div className="container">
         {/* Section Header */}
         <motion.div
@@ -58,16 +63,16 @@ export default function PricingSection() {
           className="text-center max-w-2xl mx-auto mb-16"
         >
           <span className="inline-block px-4 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-body font-semibold tracking-wide uppercase mb-4">
-            Pricing
+            {t("nav.pricing")}
           </span>
           <h2 className="font-display font-extrabold text-3xl sm:text-4xl lg:text-[2.75rem] text-foreground leading-tight mb-4">
-            Pricing That Aligns with
+            {isRTL ? 'خطط بسيطة وشفافة للأسعار' : 'Pricing That Aligns with'}
             <br />
-            Your <span className="text-primary">Success</span>
+            {isRTL ? '' : 'Your '}
+            <span className="text-primary">{isRTL ? '' : 'Success'}</span>
           </h2>
           <p className="text-muted-foreground font-body text-lg leading-relaxed">
-            Transparent, scalable plans designed for trading businesses of every size.
-            Start small and grow — no hidden fees, no surprises.
+            {isRTL ? 'اختر الباقة المناسبة لاحتياجات عملك' : 'Transparent, scalable plans designed for trading businesses of every size. Start small and grow — no hidden fees, no surprises.'}
           </p>
         </motion.div>
 
@@ -89,7 +94,7 @@ export default function PricingSection() {
                 <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
                   <span className="inline-flex items-center gap-1.5 px-4 py-1 rounded-full bg-primary text-white text-xs font-body font-semibold shadow-lg shadow-primary/30">
                     <Star className="w-3 h-3 fill-current" />
-                    Most Popular
+                    {isRTL ? 'الأكثر شعبية' : 'Most Popular'}
                   </span>
                 </div>
               )}
@@ -99,13 +104,13 @@ export default function PricingSection() {
                   className={`font-display font-bold text-lg mb-1 ${plan.popular ? "text-white" : "text-foreground"
                     }`}
                 >
-                  {plan.name}
+                  {isRTL ? plan.name_ar : plan.name}
                 </h3>
                 <p
                   className={`text-sm font-body ${plan.popular ? "text-slate-300" : "text-muted-foreground"
                     }`}
                 >
-                  {plan.description}
+                  {isRTL ? plan.description_ar : plan.description}
                 </p>
               </div>
 
@@ -115,19 +120,19 @@ export default function PricingSection() {
                     className={`font-mono font-bold text-4xl ${plan.popular ? "text-white" : "text-foreground"
                       }`}
                   >
-                    {plan.price}
+                    {isRTL ? plan.price_ar : plan.price}
                   </span>
                 </div>
                 <span
                   className={`text-sm font-body ${plan.popular ? "text-slate-400" : "text-muted-foreground"
                     }`}
                 >
-                  {plan.period}
+                  {isRTL ? plan.period_ar : plan.period}
                 </span>
               </div>
 
               <ul className="space-y-3 mb-8 flex-1">
-                {plan.features.map((feat: string) => (
+                {(isRTL ? plan.features_ar : plan.features).map((feat: string) => (
                   <li key={feat} className="flex items-start gap-2.5">
                     <Check
                       className={`w-4 h-4 mt-0.5 shrink-0 ${plan.popular ? "text-primary-light" : "text-primary"
@@ -148,9 +153,9 @@ export default function PricingSection() {
                   ? "bg-primary hover:bg-primary-light text-white shadow-lg shadow-primary/30"
                   : "bg-navy hover:bg-navy-light text-white"
                   }`}
-                onClick={() => handleCTA(plan.name)}
+                onClick={() => handleCTA(isRTL ? plan.name_ar : plan.name, i)}
               >
-                {plan.cta}
+                {isRTL ? plan.cta_ar : plan.cta}
               </Button>
             </motion.div>
           ))}
@@ -162,7 +167,7 @@ export default function PricingSection() {
             onClick={() => setShowComparison(!showComparison)}
             className="w-full flex items-center justify-between px-6 py-4 bg-card border border-border rounded-xl hover:shadow-sm transition-shadow font-body font-medium text-foreground"
           >
-            <span>Explore Comprehensive Feature Comparison</span>
+            <span>{isRTL ? 'استكشف مقارنة الميزات الشاملة' : 'Explore Comprehensive Feature Comparison'}</span>
             {showComparison ? (
               <ChevronUp className="w-5 h-5 text-muted-foreground" />
             ) : (
@@ -181,16 +186,16 @@ export default function PricingSection() {
                   <thead>
                     <tr className="border-b border-border">
                       <th className="text-left px-6 py-4 font-display font-bold text-foreground w-[40%]">
-                        Feature
+                        {isRTL ? 'الميزة' : 'Feature'}
                       </th>
                       <th className="text-center px-4 py-4 font-display font-bold text-foreground">
-                        Starter
+                        {isRTL ? 'المبتدئ' : 'Starter'}
                       </th>
                       <th className="text-center px-4 py-4 font-display font-bold text-primary">
-                        Professional
+                        {isRTL ? 'المحترف' : 'Professional'}
                       </th>
                       <th className="text-center px-4 py-4 font-display font-bold text-foreground">
-                        Enterprise
+                        {isRTL ? 'المؤسسات' : 'Enterprise'}
                       </th>
                     </tr>
                   </thead>
@@ -202,7 +207,7 @@ export default function PricingSection() {
                             colSpan={4}
                             className="px-6 py-3 font-display font-semibold text-foreground text-xs uppercase tracking-wider"
                           >
-                            {cat.name}
+                            {isRTL ? cat.name_ar : cat.name}
                           </td>
                         </tr>
                         {cat.features.map((feat: any) => (
@@ -211,7 +216,7 @@ export default function PricingSection() {
                             className="border-b border-border/50 hover:bg-slate-50/30 transition-colors"
                           >
                             <td className="px-6 py-3 font-body text-foreground/80">
-                              {feat.name}
+                              {isRTL ? feat.name_ar : feat.name}
                             </td>
                             <td className="text-center px-4 py-3">
                               {feat.starter ? (
@@ -249,9 +254,12 @@ export default function PricingSection() {
       <LeadCaptureDialog
         open={dialogOpen}
         onOpenChange={setDialogOpen}
-        title={`Get Started with ${selectedPlan}`}
-        description="Enter your details below and our team will get your trading business set up immediately."
-        source={`${selectedPlan} Plan (Pricing Page)`}
+        title={dialogType === "trial" ? t("dialog.trial_title") : t("dialog.demo_title")}
+        description={dialogType === "trial"
+          ? t("dialog.trial_desc")
+          : t("dialog.demo_desc")
+        }
+        source={dialogType === "trial" ? `Pricing (Free Trial) [${i18n.language}]` : `Pricing (Demo) [${i18n.language}]`}
       />
     </section>
   );

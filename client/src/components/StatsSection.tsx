@@ -4,12 +4,13 @@
  */
 import { motion, useInView } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 
-const stats = [
-  { value: 200, suffix: "+", label: "Businesses Served" },
-  { value: 25, suffix: "K+", label: "Active Licenses" },
-  { value: 12, suffix: "+", label: "Industries Covered" },
-  { value: 5, suffix: "+", label: "Countries" },
+const getStats = (t: any) => [
+  { value: 200, suffix: "+", label: t("stats.items.businesses") },
+  { value: 25, suffix: "K+", label: t("stats.items.licenses") },
+  { value: 12, suffix: "+", label: t("stats.items.industries") },
+  { value: 5, suffix: "+", label: t("stats.items.countries") },
 ];
 
 function AnimatedCounter({ target, suffix }: { target: number; suffix: string }) {
@@ -43,6 +44,8 @@ function AnimatedCounter({ target, suffix }: { target: number; suffix: string })
 }
 
 export default function StatsSection() {
+  const { t } = useTranslation();
+  const stats = getStats(t);
   return (
     <section className="relative py-20 lg:py-24 bg-navy overflow-hidden">
       {/* Ambient orbs */}
@@ -58,10 +61,10 @@ export default function StatsSection() {
           className="text-center mb-14"
         >
           <h2 className="font-display font-extrabold text-3xl sm:text-4xl text-white leading-tight mb-3">
-            Trusted Across the Kingdom
+            {t("stats.title")}
           </h2>
           <p className="text-slate-400 font-body text-lg">
-            Powering trading businesses from Riyadh to Jeddah and beyond.
+            {t("stats.description")}
           </p>
         </motion.div>
 

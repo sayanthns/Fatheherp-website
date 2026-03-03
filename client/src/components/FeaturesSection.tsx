@@ -4,6 +4,7 @@
  * Warm slate backgrounds, soft shadows, coral accents
  */
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import {
   FileText,
   ShoppingCart,
@@ -15,66 +16,60 @@ import {
   Zap,
 } from "lucide-react";
 
-const features = [
+const getFeatures = (t: any) => [
   {
     icon: FileText,
-    title: "ZATCA E-Invoicing",
-    description:
-      "Fully compliant with ZATCA Phase 2 requirements. Generate, validate, and submit e-invoices automatically — no manual configuration needed.",
+    title: t("features.list.zatca.title"),
+    description: t("features.list.zatca.desc"),
     color: "bg-coral/10 text-coral",
   },
   {
     icon: ShoppingCart,
-    title: "Sales & POS",
-    description:
-      "Manage quotations, sales orders, and invoices seamlessly. Built-in POS for retail operations with real-time inventory sync.",
+    title: t("features.list.sales.title"),
+    description: t("features.list.sales.desc"),
     color: "bg-blue-50 text-blue-600",
   },
   {
     icon: Package,
-    title: "Inventory Management",
-    description:
-      "Track stock across multiple warehouses in real time. Automated reorder points, batch tracking, and comprehensive stocktaking tools.",
+    title: t("features.list.inventory.title"),
+    description: t("features.list.inventory.desc"),
     color: "bg-emerald-50 text-emerald-600",
   },
   {
     icon: Calculator,
-    title: "Financial Accounting",
-    description:
-      "Complete double-entry accounting with VAT management. Automated journal entries, bank reconciliation, and financial reporting.",
+    title: t("features.list.accounting.title"),
+    description: t("features.list.accounting.desc"),
     color: "bg-amber-50 text-amber-600",
   },
   {
     icon: Users,
-    title: "CRM & Customer Management",
-    description:
-      "Track leads, manage customer relationships, and run loyalty programs. Integrated communication history for every client.",
+    title: t("features.list.crm.title"),
+    description: t("features.list.crm.desc"),
     color: "bg-violet-50 text-violet-600",
   },
   {
     icon: BarChart3,
-    title: "Procurement & Purchasing",
-    description:
-      "Streamline supplier management, purchase orders, and requisitions. Compare quotes and track deliveries from a single dashboard.",
+    title: t("features.list.procurement.title"),
+    description: t("features.list.procurement.desc"),
     color: "bg-teal-50 text-teal-600",
   },
   {
     icon: Shield,
-    title: "Data Security & Compliance",
-    description:
-      "Enterprise-grade security with role-based access control, audit trails, and full compliance with Saudi data protection regulations.",
+    title: t("features.list.security.title"),
+    description: t("features.list.security.desc"),
     color: "bg-rose-50 text-rose-600",
   },
   {
     icon: Zap,
-    title: "Fast Implementation",
-    description:
-      "Go live in 2-4 weeks with our guided onboarding. Dedicated implementation team handles data migration and user training.",
+    title: t("features.list.implementation.title"),
+    description: t("features.list.implementation.desc"),
     color: "bg-sky-50 text-sky-600",
   },
 ];
 
 export default function FeaturesSection() {
+  const { t } = useTranslation();
+  const features = getFeatures(t);
   return (
     <section id="features" className="py-24 lg:py-32 bg-background">
       <div className="container">
@@ -87,16 +82,13 @@ export default function FeaturesSection() {
           className="text-center max-w-2xl mx-auto mb-16"
         >
           <span className="inline-block px-4 py-1.5 rounded-full bg-coral/10 text-coral text-xs font-body font-semibold tracking-wide uppercase mb-4">
-            Why Fateh ERP
+            {t("features.badge")}
           </span>
           <h2 className="font-display font-extrabold text-3xl sm:text-4xl lg:text-[2.75rem] text-foreground leading-tight mb-4">
-            Everything Your Trading
-            <br />
-            Business Needs
+            {t("features.title")}
           </h2>
           <p className="text-muted-foreground font-body text-lg leading-relaxed">
-            Purpose-built for Saudi trading companies. From e-invoicing to multi-warehouse inventory,
-            every feature is designed to simplify your operations.
+            {t("features.description")}
           </p>
         </motion.div>
 

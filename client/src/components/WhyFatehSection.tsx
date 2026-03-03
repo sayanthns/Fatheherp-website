@@ -2,37 +2,36 @@
  * Design: Fluid Commerce — Soft Corporate Dynamism
  * WhyFateh: Value proposition section between pricing and testimonials
  */
+import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import { TrendingUp, Settings, Eye, Headphones } from "lucide-react";
 
-const benefits = [
+const getBenefits = (t: any) => [
   {
     icon: TrendingUp,
-    title: "Scale Efficiently",
-    description:
-      "Start with the Starter plan and grow into Professional or Enterprise as your trading volume increases. Your data migrates seamlessly — no re-implementation needed.",
+    title: t("features.benefits.scale.title"),
+    description: t("features.benefits.scale.desc"),
   },
   {
     icon: Settings,
-    title: "Tailored for Trading",
-    description:
-      "Unlike generic ERPs, every module in Fateh is optimized for trading workflows — from goods procurement to multi-store sales and ZATCA-compliant invoicing.",
+    title: t("features.benefits.tailored.title"),
+    description: t("features.benefits.tailored.desc"),
   },
   {
     icon: Eye,
-    title: "Transparent Costs",
-    description:
-      "No hidden fees, no surprise charges. Our per-user pricing is straightforward, and you can upgrade or downgrade at any time without penalties.",
+    title: t("features.benefits.costs.title"),
+    description: t("features.benefits.costs.desc"),
   },
   {
     icon: Headphones,
-    title: "Continuous Support",
-    description:
-      "Our Saudi-based support team understands your business. From onboarding to ongoing optimization, we are with you every step of the way.",
+    title: t("features.benefits.support.title"),
+    description: t("features.benefits.support.desc"),
   },
 ];
 
 export default function WhyFatehSection() {
+  const { t } = useTranslation();
+  const benefits = getBenefits(t);
   return (
     <section className="py-24 lg:py-32 bg-background">
       <div className="container">
@@ -44,16 +43,13 @@ export default function WhyFatehSection() {
           className="text-center max-w-2xl mx-auto mb-16"
         >
           <span className="inline-block px-4 py-1.5 rounded-full bg-navy/5 text-navy text-xs font-body font-semibold tracking-wide uppercase mb-4">
-            Why Fateh ERP
+            {t("features.badge_why")}
           </span>
           <h2 className="font-display font-extrabold text-3xl sm:text-4xl lg:text-[2.75rem] text-foreground leading-tight mb-4">
-            Why Fateh ERP Works
-            <br />
-            for <span className="text-coral">Your Business</span>
+            {t("features.title_why")}
           </h2>
           <p className="text-muted-foreground font-body text-lg leading-relaxed">
-            Scale efficiently, customize your plan, and benefit from transparent costs.
-            Elevate your trading operations with continuous support and cutting-edge updates.
+            {t("features.desc_why")}
           </p>
         </motion.div>
 

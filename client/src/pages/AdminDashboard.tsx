@@ -7,16 +7,23 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 
 interface PricingPlan {
     name: string;
+    name_ar: string;
     price: string;
+    price_ar: string;
     period: string;
+    period_ar: string;
     description: string;
+    description_ar: string;
     popular: boolean;
     features: string[];
+    features_ar: string[];
     cta: string;
+    cta_ar: string;
 }
 
 interface ComparisonFeature {
     name: string;
+    name_ar: string;
     starter: boolean;
     professional: boolean;
     enterprise: boolean;
@@ -24,6 +31,7 @@ interface ComparisonFeature {
 
 interface ComparisonCategory {
     name: string;
+    name_ar: string;
     features: ComparisonFeature[];
 }
 
@@ -799,21 +807,72 @@ export default function AdminDashboard() {
                                 {pricing.plans.map((plan, planIdx) => (
                                     <div key={planIdx} className="bg-white p-6 rounded-xl shadow-sm border border-slate-200 space-y-4">
                                         <div className="font-bold text-lg border-b pb-2">{plan.name} Tier</div>
-                                        <div className="space-y-1.5"><label className="text-xs font-semibold text-slate-700">Display Name</label><input value={plan.name} onChange={e => {
-                                            const newPricing = { ...pricing }; newPricing.plans[planIdx].name = e.target.value; setPricing(newPricing);
-                                        }} className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg" /></div>
-                                        <div className="space-y-1.5"><label className="text-xs font-semibold text-slate-700">Price Display (e.g. 2,499)</label><input value={plan.price} onChange={e => {
-                                            const newPricing = { ...pricing }; newPricing.plans[planIdx].price = e.target.value; setPricing(newPricing);
-                                        }} className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg" /></div>
-                                        <div className="space-y-1.5"><label className="text-xs font-semibold text-slate-700">Period (e.g. / Year)</label><input value={plan.period} onChange={e => {
-                                            const newPricing = { ...pricing }; newPricing.plans[planIdx].period = e.target.value; setPricing(newPricing);
-                                        }} className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg" /></div>
-                                        <div className="space-y-1.5"><label className="text-xs font-semibold text-slate-700">Description</label><textarea value={plan.description} onChange={e => {
-                                            const newPricing = { ...pricing }; newPricing.plans[planIdx].description = e.target.value; setPricing(newPricing);
-                                        }} className="w-full h-20 px-3 py-2 text-sm border border-slate-300 rounded-lg" /></div>
-                                        <div className="space-y-1.5"><label className="text-xs font-semibold text-slate-700">CTA Button Text</label><input value={plan.cta} onChange={e => {
-                                            const newPricing = { ...pricing }; newPricing.plans[planIdx].cta = e.target.value; setPricing(newPricing);
-                                        }} className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg" /></div>
+                                        <div className="space-y-1.5">
+                                            <label className="text-xs font-semibold text-slate-700">Display Name (EN)</label>
+                                            <input value={plan.name} onChange={e => {
+                                                const newPricing = { ...pricing }; newPricing.plans[planIdx].name = e.target.value; setPricing(newPricing);
+                                            }} className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg" />
+                                        </div>
+                                        <div className="space-y-1.5">
+                                            <label className="text-xs font-semibold text-slate-700 font-arabic text-right block">الاسم المعروض (AR)</label>
+                                            <input value={plan.name_ar} dir="rtl" onChange={e => {
+                                                const newPricing = { ...pricing }; newPricing.plans[planIdx].name_ar = e.target.value; setPricing(newPricing);
+                                            }} className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg font-arabic" />
+                                        </div>
+                                        <div className="grid grid-cols-2 gap-3">
+                                            <div className="space-y-1.5">
+                                                <label className="text-xs font-semibold text-slate-700">Price Display (EN)</label>
+                                                <input value={plan.price} onChange={e => {
+                                                    const newPricing = { ...pricing }; newPricing.plans[planIdx].price = e.target.value; setPricing(newPricing);
+                                                }} className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg" />
+                                            </div>
+                                            <div className="space-y-1.5">
+                                                <label className="text-xs font-semibold text-slate-700 font-arabic text-right block">عرض السعر (AR)</label>
+                                                <input value={plan.price_ar} dir="rtl" onChange={e => {
+                                                    const newPricing = { ...pricing }; newPricing.plans[planIdx].price_ar = e.target.value; setPricing(newPricing);
+                                                }} className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg font-arabic" />
+                                            </div>
+                                        </div>
+                                        <div className="grid grid-cols-2 gap-3">
+                                            <div className="space-y-1.5">
+                                                <label className="text-xs font-semibold text-slate-700">Period (EN)</label>
+                                                <input value={plan.period} onChange={e => {
+                                                    const newPricing = { ...pricing }; newPricing.plans[planIdx].period = e.target.value; setPricing(newPricing);
+                                                }} className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg" />
+                                            </div>
+                                            <div className="space-y-1.5">
+                                                <label className="text-xs font-semibold text-slate-700 font-arabic text-right block">الفترة (AR)</label>
+                                                <input value={plan.period_ar} dir="rtl" onChange={e => {
+                                                    const newPricing = { ...pricing }; newPricing.plans[planIdx].period_ar = e.target.value; setPricing(newPricing);
+                                                }} className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg font-arabic" />
+                                            </div>
+                                        </div>
+                                        <div className="space-y-1.5">
+                                            <label className="text-xs font-semibold text-slate-700">Description (EN)</label>
+                                            <textarea value={plan.description} onChange={e => {
+                                                const newPricing = { ...pricing }; newPricing.plans[planIdx].description = e.target.value; setPricing(newPricing);
+                                            }} className="w-full h-16 px-3 py-2 text-sm border border-slate-300 rounded-lg" />
+                                        </div>
+                                        <div className="space-y-1.5">
+                                            <label className="text-xs font-semibold text-slate-700 font-arabic text-right block">الوصف (AR)</label>
+                                            <textarea value={plan.description_ar} dir="rtl" onChange={e => {
+                                                const newPricing = { ...pricing }; newPricing.plans[planIdx].description_ar = e.target.value; setPricing(newPricing);
+                                            }} className="w-full h-16 px-3 py-2 text-sm border border-slate-300 rounded-lg font-arabic" />
+                                        </div>
+                                        <div className="grid grid-cols-2 gap-3">
+                                            <div className="space-y-1.5">
+                                                <label className="text-xs font-semibold text-slate-700">CTA Text (EN)</label>
+                                                <input value={plan.cta} onChange={e => {
+                                                    const newPricing = { ...pricing }; newPricing.plans[planIdx].cta = e.target.value; setPricing(newPricing);
+                                                }} className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg" />
+                                            </div>
+                                            <div className="space-y-1.5">
+                                                <label className="text-xs font-semibold text-slate-700 font-arabic text-right block">نص الزر (AR)</label>
+                                                <input value={plan.cta_ar} dir="rtl" onChange={e => {
+                                                    const newPricing = { ...pricing }; newPricing.plans[planIdx].cta_ar = e.target.value; setPricing(newPricing);
+                                                }} className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg font-arabic" />
+                                            </div>
+                                        </div>
                                         <div className="flex items-center gap-2 pt-2">
                                             <input type="checkbox" checked={plan.popular} onChange={e => {
                                                 const newPricing = { ...pricing }; newPricing.plans.forEach(p => p.popular = false); newPricing.plans[planIdx].popular = e.target.checked; setPricing(newPricing);
@@ -822,16 +881,21 @@ export default function AdminDashboard() {
                                         </div>
                                         <div className="space-y-1.5 pt-2 border-t mt-4">
                                             <label className="text-xs font-semibold text-slate-700 flex justify-between mt-2">Highlight Features <button onClick={() => {
-                                                const newPricing = { ...pricing }; newPricing.plans[planIdx].features.push("New Feature"); setPricing(newPricing);
+                                                const newPricing = { ...pricing }; newPricing.plans[planIdx].features.push("New Feature"); newPricing.plans[planIdx].features_ar.push("ميزة جديدة"); setPricing(newPricing);
                                             }} className="text-blue-600 hover:text-blue-800 bg-blue-50 px-2 py-0.5 rounded">+ Add</button></label>
                                             {plan.features.map((feat, featIdx) => (
-                                                <div key={featIdx} className="flex gap-2 mb-2">
-                                                    <input value={feat} onChange={e => {
-                                                        const newPricing = { ...pricing }; newPricing.plans[planIdx].features[featIdx] = e.target.value; setPricing(newPricing);
-                                                    }} className="flex-1 px-3 py-1.5 text-sm border border-slate-300 rounded-lg" />
-                                                    <button onClick={() => {
-                                                        const newPricing = { ...pricing }; newPricing.plans[planIdx].features.splice(featIdx, 1); setPricing(newPricing);
-                                                    }} className="p-1.5 text-red-500 hover:bg-red-50 rounded"><Trash2 className="w-4 h-4" /></button>
+                                                <div key={featIdx} className="space-y-1 mb-4 p-2 bg-slate-50 rounded-lg border border-slate-100">
+                                                    <div className="flex gap-2">
+                                                        <input value={feat} placeholder="English" onChange={e => {
+                                                            const newPricing = { ...pricing }; newPricing.plans[planIdx].features[featIdx] = e.target.value; setPricing(newPricing);
+                                                        }} className="flex-1 px-3 py-1.5 text-xs border border-slate-300 rounded-lg" />
+                                                        <button onClick={() => {
+                                                            const newPricing = { ...pricing }; newPricing.plans[planIdx].features.splice(featIdx, 1); newPricing.plans[planIdx].features_ar.splice(featIdx, 1); setPricing(newPricing);
+                                                        }} className="p-1 text-red-500 hover:bg-red-50 rounded"><Trash2 className="w-3.5 h-3.5" /></button>
+                                                    </div>
+                                                    <input value={plan.features_ar[featIdx] || ""} dir="rtl" placeholder="العربية" onChange={e => {
+                                                        const newPricing = { ...pricing }; newPricing.plans[planIdx].features_ar[featIdx] = e.target.value; setPricing(newPricing);
+                                                    }} className="w-full px-3 py-1.5 text-xs border border-slate-300 rounded-lg font-arabic" />
                                                 </div>
                                             ))}
                                         </div>
@@ -844,15 +908,23 @@ export default function AdminDashboard() {
                                 {pricing.comparisonCategories.map((cat, catIdx) => (
                                     <div key={catIdx} className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
                                         <div className="bg-slate-50 border-b border-slate-200 p-4 flex justify-between items-center shrink-0">
-                                            <div className="flex items-center gap-2 font-bold text-slate-800 w-1/2">
-                                                Category:
-                                                <input value={cat.name} onChange={e => {
-                                                    const newPricing = { ...pricing }; newPricing.comparisonCategories[catIdx].name = e.target.value; setPricing(newPricing);
-                                                }} className="font-bold text-slate-800 bg-white border border-slate-200 focus:ring-1 focus:ring-primary/50 rounded px-2 py-1 w-full" />
+                                            <div className="flex flex-col gap-2 w-3/4">
+                                                <div className="flex items-center gap-2">
+                                                    <span className="text-xs font-bold text-slate-400">EN:</span>
+                                                    <input value={cat.name} onChange={e => {
+                                                        const newPricing = { ...pricing }; newPricing.comparisonCategories[catIdx].name = e.target.value; setPricing(newPricing);
+                                                    }} className="font-bold text-slate-800 bg-white border border-slate-200 focus:ring-1 focus:ring-primary/50 rounded px-2 py-1 w-full" />
+                                                </div>
+                                                <div className="flex items-center gap-2">
+                                                    <span className="text-xs font-bold text-slate-400">AR:</span>
+                                                    <input value={cat.name_ar} dir="rtl" onChange={e => {
+                                                        const newPricing = { ...pricing }; newPricing.comparisonCategories[catIdx].name_ar = e.target.value; setPricing(newPricing);
+                                                    }} className="font-bold text-slate-800 bg-white border border-slate-200 focus:ring-1 focus:ring-primary/50 rounded px-2 py-1 w-full font-arabic" />
+                                                </div>
                                             </div>
                                             <div className="flex gap-2">
                                                 <Button size="sm" variant="outline" onClick={() => {
-                                                    const newPricing = { ...pricing }; newPricing.comparisonCategories[catIdx].features.push({ name: "New Feature", starter: false, professional: false, enterprise: false }); setPricing(newPricing);
+                                                    const newPricing = { ...pricing }; newPricing.comparisonCategories[catIdx].features.push({ name: "New Feature", name_ar: "ميزة جديدة", starter: false, professional: false, enterprise: false }); setPricing(newPricing);
                                                 }} className="h-8 text-xs bg-white"><Plus className="w-3 h-3 mr-1" /> Add Feature Row</Button>
                                                 <Button size="sm" variant="outline" onClick={() => {
                                                     if (confirm("Delete this entire category?")) {
@@ -875,10 +947,13 @@ export default function AdminDashboard() {
                                                 <tbody className="divide-y divide-slate-100">
                                                     {cat.features.map((feat, featIdx) => (
                                                         <tr key={featIdx} className="hover:bg-slate-50/50">
-                                                            <td className="px-4 py-2">
-                                                                <input value={feat.name} onChange={e => {
+                                                            <td className="px-4 py-2 space-y-1">
+                                                                <input value={feat.name} placeholder="English" onChange={e => {
                                                                     const newPricing = { ...pricing }; newPricing.comparisonCategories[catIdx].features[featIdx].name = e.target.value; setPricing(newPricing);
-                                                                }} className="w-full px-2 py-1.5 border border-slate-200 rounded text-sm focus:border-primary/50 focus:ring-1 focus:ring-primary/50" />
+                                                                }} className="w-full px-2 py-1 border border-slate-200 rounded text-xs focus:border-primary/50 focus:ring-1 focus:ring-primary/50" />
+                                                                <input value={feat.name_ar} dir="rtl" placeholder="العربية" onChange={e => {
+                                                                    const newPricing = { ...pricing }; newPricing.comparisonCategories[catIdx].features[featIdx].name_ar = e.target.value; setPricing(newPricing);
+                                                                }} className="w-full px-2 py-1 border border-slate-200 rounded text-xs font-arabic focus:border-primary/50 focus:ring-1 focus:ring-primary/50" />
                                                             </td>
                                                             <td className="px-4 py-2 text-center">
                                                                 <input type="checkbox" checked={feat.starter} onChange={e => {
@@ -908,7 +983,7 @@ export default function AdminDashboard() {
                                     </div>
                                 ))}
                                 <Button variant="outline" onClick={() => {
-                                    const newPricing = { ...pricing }; newPricing.comparisonCategories.push({ name: "New Category", features: [] }); setPricing(newPricing);
+                                    const newPricing = { ...pricing }; newPricing.comparisonCategories.push({ name: "New Category", name_ar: "فئة جديدة", features: [] }); setPricing(newPricing);
                                 }} className="w-full border-dashed py-8 bg-slate-50 text-slate-500 hover:text-primary hover:border-primary/50 hover:bg-primary/5"><Plus className="w-4 h-4 mr-2" /> Add New Comparison Category</Button>
                             </div>
                         </div>

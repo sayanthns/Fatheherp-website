@@ -1,0 +1,282 @@
+{
+    "nav": {
+        "features": "Features",
+        "modules": "Modules",
+        "pricing": "Pricing",
+        "about": "About",
+        "contact": "Contact",
+        "demo": "Schedule Demo",
+        "trial": "Start Free Trial"
+    },
+    "features": {
+        "badge": "Why Fateh ERP",
+        "title": "Everything Your Trading Business Needs",
+        "description": "Purpose-built for Saudi trading companies. From e-invoicing to multi-warehouse inventory, every feature is designed to simplify your operations.",
+        "badge_why": "Why Fateh ERP",
+        "title_why": "Why Fateh ERP Works for Your Business",
+        "desc_why": "Scale efficiently, customize your plan, and benefit from transparent costs. Elevate your trading operations with continuous support and cutting-edge updates.",
+        "benefits": {
+            "scale": {
+                "title": "Scale Efficiently",
+                "desc": "Start with the Starter plan and grow into Professional or Enterprise as your trading volume increases. Your data migrates seamlessly — no re-implementation needed."
+            },
+            "tailored": {
+                "title": "Tailored for Trading",
+                "desc": "Unlike generic ERPs, every module in Fateh is optimized for trading workflows — from goods procurement to multi-store sales and ZATCA-compliant invoicing."
+            },
+            "costs": {
+                "title": "Transparent Costs",
+                "desc": "No hidden fees, no surprise charges. Our per-user pricing is straightforward, and you can upgrade or downgrade at any time without penalties."
+            },
+            "support": {
+                "title": "Continuous Support",
+                "desc": "Our Saudi-based support team understands your business. From onboarding to ongoing optimization, we are with you every step of the way."
+            }
+        },
+        "list": {
+            "zatca": {
+                "title": "ZATCA E-Invoicing",
+                "desc": "Fully compliant with ZATCA Phase 2 requirements. Generate, validate, and submit e-invoices automatically — no manual configuration needed."
+            },
+            "sales": {
+                "title": "Sales & POS",
+                "desc": "Manage quotations, sales orders, and invoices seamlessly. Built-in POS for retail operations with real-time inventory sync."
+            },
+            "inventory": {
+                "title": "Inventory Management",
+                "desc": "Track stock across multiple warehouses in real time. Automated reorder points, batch tracking, and comprehensive stocktaking tools."
+            },
+            "accounting": {
+                "title": "Financial Accounting",
+                "desc": "Complete double-entry accounting with VAT management. Automated journal entries, bank reconciliation, and financial reporting."
+            },
+            "crm": {
+                "title": "CRM & Customer Management",
+                "desc": "Track leads, manage customer relationships, and run loyalty programs. Integrated communication history for every client."
+            },
+            "procurement": {
+                "title": "Procurement & Purchasing",
+                "desc": "Streamline supplier management, purchase orders, and requisitions. Compare quotes and track deliveries from a single dashboard."
+            },
+            "security": {
+                "title": "Data Security & Compliance",
+                "desc": "Enterprise-grade security with role-based access control, audit trails, and full compliance with Saudi data protection regulations."
+            },
+            "implementation": {
+                "title": "Fast Implementation",
+                "desc": "Go live in 2-4 weeks with our guided onboarding. Dedicated implementation team handles data migration and user training."
+            }
+        }
+    },
+    "modules": {
+        "badge": "Platform Modules",
+        "title": "Complete Trading Management",
+        "description": "Six integrated modules that cover every aspect of your trading operations — from sales to finance.",
+        "items": {
+            "sales": {
+                "label": "Sales & Invoicing",
+                "title": "Sell Smarter, Invoice Faster",
+                "desc": "Create quotations, convert to sales orders, and generate ZATCA-compliant e-invoices in seconds. Manage pricing lists, discounts, and customer-specific terms with full automation.",
+                "features": [
+                    "ZATCA Phase 2 E-Invoicing",
+                    "Point of Sale (POS)",
+                    "Quotations & Sales Orders",
+                    "Price Lists & Offers",
+                    "Credit Notes & Returns",
+                    "Sales Commission Tracking"
+                ]
+            },
+            "inventory": {
+                "label": "Inventory",
+                "title": "Real-Time Stock Visibility",
+                "desc": "Track every item across multiple warehouses with real-time updates. Automated reorder points ensure you never run out of stock, while batch and serial number tracking provides full traceability.",
+                "features": [
+                    "Multi-Warehouse Management",
+                    "Real-Time Stock Levels",
+                    "Batch & Serial Tracking",
+                    "Automated Reorder Points",
+                    "Stocktaking & Adjustments",
+                    "Product Variants & Categories"
+                ]
+            },
+            "procurement": {
+                "label": "Procurement",
+                "title": "Streamlined Purchasing",
+                "desc": "Manage your entire purchase cycle from requisition to delivery. Compare supplier quotes, track purchase orders, and maintain a centralized supplier database for better negotiation.",
+                "features": [
+                    "Purchase Orders & Requisitions",
+                    "Supplier Management",
+                    "Quote Comparison",
+                    "Delivery Tracking",
+                    "Purchase Returns",
+                    "Supplier Performance Analytics"
+                ]
+            },
+            "finance": {
+                "label": "Finance",
+                "title": "Complete Financial Control",
+                "desc": "Double-entry accounting with automated journal entries, bank reconciliation, and comprehensive financial reporting. Built-in VAT management ensures compliance with Saudi tax regulations.",
+                "features": [
+                    "Chart of Accounts",
+                    "VAT Management & Reporting",
+                    "Bank Reconciliation",
+                    "Expense Tracking",
+                    "Cost Centers",
+                    "Financial Statements"
+                ]
+            },
+            "crm": {
+                "label": "CRM",
+                "title": "Build Lasting Relationships",
+                "desc": "Track every customer interaction from first contact to repeat purchase. Manage leads, run loyalty programs, and use data-driven insights to grow customer lifetime value.",
+                "features": [
+                    "Lead & Opportunity Tracking",
+                    "Customer Communication Log",
+                    "Loyalty Points Program",
+                    "Customer Segmentation",
+                    "Follow-Up Reminders",
+                    "Sales Pipeline Analytics"
+                ]
+            },
+            "reports": {
+                "label": "Reports",
+                "title": "Data-Driven Decisions",
+                "desc": "Access real-time dashboards and detailed reports across all business functions. From sales trends to inventory turnover, get the insights you need to make informed decisions.",
+                "features": [
+                    "Real-Time Dashboards",
+                    "Sales & Revenue Reports",
+                    "Inventory Turnover Analysis",
+                    "Profit & Loss Statements",
+                    "Custom Report Builder",
+                    "Export to Excel & PDF"
+                ]
+            }
+        }
+    },
+    "about": {
+        "badge": "About Fateh ERP",
+        "title": "The Perfect Solution for Saudi Traders",
+        "description": "Fateh ERP was built from the ground up to address the specific needs of trading businesses in Saudi Arabia. We combine enterprise-grade technology with deep local expertise to deliver a platform that truly works for you.",
+        "stat": "Customer Satisfaction",
+        "values": {
+            "approach": {
+                "title": "Trading-First Approach",
+                "desc": "Every feature is designed with traders in mind. We understand the unique challenges of buying, selling, and managing goods in the Saudi market."
+            },
+            "scaling": {
+                "title": "Smart Scaling",
+                "desc": "Start with what you need and grow at your own pace. Our modular architecture means you only pay for the capabilities your business requires."
+            },
+            "expertise": {
+                "title": "Local Expertise",
+                "desc": "Our team speaks your language, understands Saudi regulations, and provides support during your business hours. We are your technology partner."
+            }
+        }
+    },
+    "cta": {
+        "title": "Ready to Transform Your Trading Business?",
+        "description": "Join 200+ Saudi businesses using Fateh ERP. Book a free demo or start your trial today — our team is here to help you every step of the way.",
+        "badge": "Get Started Today",
+        "form": {
+            "title": "Schedule a Free Demo",
+            "desc": "Fill in your details and our team will reach out within 24 hours.",
+            "name": "Full Name",
+            "company": "Company Name",
+            "email": "Email Address",
+            "phone": "Phone Number",
+            "message_label": "What are you looking for?",
+            "message_placeholder": "Tell us about your trading business and what you need...",
+            "submit": "Schedule Demo",
+            "footer": "Free 14-day trial included. No credit card required.",
+            "success": "Thank you! Our team will contact you within 24 hours.",
+            "error": "Failed to send request. Please try again."
+        },
+        "contact": {
+            "call": "Call us",
+            "email": "Email us",
+            "location": "Location",
+            "location_val": "Riyadh, Saudi Arabia"
+        }
+    },
+    "footer": {
+        "description": "Saudi Arabia's leading ERP solution for trading businesses. ZATCA compliant, cloud-based, and built for growth.",
+        "tagline": "Trading Platform",
+        "copyright": "All rights reserved.",
+        "built_for": "Built for Saudi Trading Businesses",
+        "columns": {
+            "platform": "Platform",
+            "company": "Company",
+            "resources": "Resources",
+            "legal": "Legal"
+        },
+        "links": {
+            "sales": "Sales & Invoicing",
+            "inventory": "Inventory Management",
+            "procurement": "Procurement",
+            "finance": "Financial Accounting",
+            "crm": "CRM",
+            "reports": "Reports & Analytics",
+            "about": "About Us",
+            "pricing": "Pricing",
+            "contact": "Contact",
+            "careers": "Careers",
+            "partner": "Partner Program",
+            "knowledge": "Knowledge Center",
+            "docs": "Documentation",
+            "api": "API Reference",
+            "status": "System Status",
+            "integrations": "Integrations",
+            "privacy": "Privacy Policy",
+            "terms": "Terms of Service",
+            "security": "Security",
+            "eula": "EULA"
+        }
+    },
+    "hero": {
+        "badge": "ZATCA Phase 2 Compliant",
+        "title": "The Trading ERP",
+        "title_sub": "Built for",
+        "title_highlight": "Saudi Business",
+        "description": "Manage sales, inventory, procurement, and finance in one powerful platform. Purpose-built for trading companies in the Kingdom.",
+        "trial_btn": "Start Free Trial",
+        "demo_btn": "Schedule Demo",
+        "badges": {
+            "zatca": "ZATCA Phase 2 Ready",
+            "iso": "ISO 27001 Certified",
+            "businesses": "200+ Businesses",
+            "cloud": "Cloud Infrastructure"
+        }
+    },
+    "dialog": {
+        "trial_title": "Start Your Free Trial",
+        "demo_title": "Schedule a Demo",
+        "trial_desc": "Enter your details below and our team will get you set up with a free trial.",
+        "demo_desc": "Enter your information and we'll contact you to schedule a personalized demo."
+    },
+    "testimonials": {
+        "badge": "Testimonials",
+        "title": "Trusted by Saudi Traders",
+        "description": "See how trading businesses across the Kingdom are growing with Fateh ERP."
+    },
+    "help_banner": {
+        "title": "Help Is Just One Tap Away",
+        "description": "At Fateh ERP, we reach out to trading businesses at periodic intervals, offering assistance on a no-obligation basis. Book an appointment for an exploratory call with our subject matter expert.",
+        "btn_appointment": "Schedule an Appointment",
+        "btn_contact": "Contact Us",
+        "toast_no_link": "Calendly schedule link not configured yet.",
+        "toast_error": "Failed to connect to server."
+    },
+    "stats": {
+        "title": "Trusted Across the Kingdom",
+        "description": "Powering trading businesses from Riyadh to Jeddah and beyond.",
+        "items": {
+            "businesses": "Businesses Served",
+            "licenses": "Active Licenses",
+            "industries": "Industries Covered",
+            "countries": "Countries"
+        }
+    },
+    "common": {
+        "language": "العربية"
+    }
+}

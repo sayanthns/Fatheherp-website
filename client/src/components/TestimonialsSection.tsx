@@ -2,6 +2,7 @@
  * Design: Fluid Commerce — Soft Corporate Dynamism
  * Testimonials: Card-based with subtle glass effect
  */
+import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import { Star, Quote } from "lucide-react";
 
@@ -17,6 +18,8 @@ interface Testimonial {
 }
 
 export default function TestimonialsSection() {
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === 'ar';
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -44,13 +47,13 @@ export default function TestimonialsSection() {
           className="text-center max-w-2xl mx-auto mb-16"
         >
           <span className="inline-block px-4 py-1.5 rounded-full bg-coral/10 text-coral text-xs font-body font-semibold tracking-wide uppercase mb-4">
-            Testimonials
+            {t("testimonials.badge")}
           </span>
           <h2 className="font-display font-extrabold text-3xl sm:text-4xl lg:text-[2.75rem] text-foreground leading-tight mb-4">
-            Trusted by Saudi Traders
+            {t("testimonials.title")}
           </h2>
           <p className="text-muted-foreground font-body text-lg leading-relaxed">
-            See how trading businesses across the Kingdom are growing with Fateh ERP.
+            {t("testimonials.description")}
           </p>
         </motion.div>
 
@@ -107,8 +110,8 @@ export default function TestimonialsSection() {
           </div>
 
           {/* Scroll Indication Fade */}
-          <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-slate-50 to-transparent pointer-events-none" />
-          <div className="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-slate-50 to-transparent pointer-events-none" />
+          <div className={`absolute ${isRTL ? 'left-0 bg-gradient-to-r' : 'right-0 bg-gradient-to-l'} top-0 bottom-0 w-16 from-slate-50 to-transparent pointer-events-none`} />
+          <div className={`absolute ${isRTL ? 'right-0 bg-gradient-to-l' : 'left-0 bg-gradient-to-r'} top-0 bottom-0 w-16 from-slate-50 to-transparent pointer-events-none`} />
         </div>
       </div>
     </section>

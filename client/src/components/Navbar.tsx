@@ -3,20 +3,23 @@
  * Navbar: Sticky, transparent on hero (white text), glass on scroll (dark text)
  */
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { LeadCaptureDialog } from "@/components/LeadCaptureDialog";
 
-const navLinks = [
-  { label: "Features", href: "#features" },
-  { label: "Modules", href: "#modules" },
-  { label: "Pricing", href: "#pricing" },
-  { label: "About", href: "#about" },
-  { label: "Contact", href: "#contact" },
+const getNavLinks = (t: any) => [
+  { label: t("nav.features"), href: "#features" },
+  { label: t("nav.modules"), href: "#modules" },
+  { label: t("nav.pricing"), href: "#pricing" },
+  { label: t("nav.about"), href: "#about" },
+  { label: t("nav.contact"), href: "#contact" },
 ];
 
 export default function Navbar() {
+  const { t, i18n } = useTranslation();
+  const navLinks = getNavLinks(t);
   const [scrolled, setScrolled] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -69,6 +72,11 @@ export default function Navbar() {
     setDialogOpen(true);
   };
 
+  const toggleLanguage = () => {
+    const nextLang = i18n.language === "en" ? "ar" : "en";
+    i18n.changeLanguage(nextLang);
+  };
+
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-xl shadow-[0_1px_3px_oklch(0_0_0/0.05)] border-b border-slate-100 transition-transform duration-300 ${isVisible ? "translate-y-0" : "-translate-y-full"}`}>
       <nav className="container flex items-center justify-between h-18 lg:h-20">
@@ -96,7 +104,7 @@ export default function Navbar() {
               Fateh<span className="text-coral"> ERP</span>
             </span>
             <span className="text-[0.6rem] font-body font-medium tracking-widest uppercase leading-none text-slate-500">
-              Trading Platform
+              {t("footer.tagline")}
             </span>
           </div>
         </a>
@@ -117,17 +125,25 @@ export default function Navbar() {
         {/* Desktop CTA */}
         <div className="hidden lg:flex items-center gap-3">
           <Button
+            variant="ghost"
+            size="sm"
+            onClick={toggleLanguage}
+            className="font-body font-bold text-sm text-primary hover:bg-primary/5 transition-all px-3"
+          >
+            {t("common.language")}
+          </Button>
+          <Button
             variant="outline"
             className="font-body font-medium text-sm transition-colors border-slate-200 text-slate-700 hover:bg-slate-50 bg-white shadow-sm"
             onClick={() => openDialog("demo")}
           >
-            Schedule Demo
+            {t("nav.demo")}
           </Button>
           <Button
             className="font-body font-medium text-sm bg-coral hover:bg-coral-light text-white shadow-md"
             onClick={() => openDialog("trial")}
           >
-            Start Free Trial
+            {t("nav.trial")}
           </Button>
         </div>
 
@@ -161,17 +177,25 @@ export default function Navbar() {
               ))}
               <div className="flex flex-col gap-2 mt-3 pt-3 border-t border-border">
                 <Button
+                  variant="ghost"
+                  className="w-full font-body font-bold text-primary hover:bg-primary/5 justify-between px-4"
+                  onClick={toggleLanguage}
+                >
+                  <span>{i18n.language === 'en' ? 'Switch to Arabic' : 'التبديل إلى الإنجليزية'}</span>
+                  <span>{t("common.language")}</span>
+                </Button>
+                <Button
                   variant="outline"
                   className="w-full font-body font-medium border-navy/20 text-navy bg-transparent"
                   onClick={() => openDialog("demo")}
                 >
-                  Schedule Demo
+                  {t("nav.demo")}
                 </Button>
                 <Button
                   className="w-full font-body font-medium bg-coral hover:bg-coral-light text-white"
                   onClick={() => openDialog("trial")}
                 >
-                  Start Free Trial
+                  {t("nav.trial")}
                 </Button>
               </div>
             </div>
@@ -182,12 +206,12 @@ export default function Navbar() {
       <LeadCaptureDialog
         open={dialogOpen}
         onOpenChange={setDialogOpen}
-        title={dialogType === "trial" ? "Start Your Free Trial" : "Schedule a Demo"}
+        title={dialogType === "trial" ? t("dialog.trial_title") : t("dialog.demo_title")}
         description={dialogType === "trial"
-          ? "Enter your details below and our team will get you set up with a free trial."
-          : "Enter your information and we'll contact you to schedule a personalized demo."
+          ? t("dialog.trial_desc")
+          : t("dialog.demo_desc")
         }
-        source={dialogType === "trial" ? "Navigation (Free Trial)" : "Navigation (Demo)"}
+        source={dialogType === "trial" ? `Navigation (Free Trial) [${i18n.language}]` : `Navigation (Demo) [${i18n.language}]`}
       />
     </header>
   );

@@ -4,6 +4,7 @@
  * Diagonal clip-path bottom, gradient orbs, staggered entrance animations
  */
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, ArrowRight, Shield, Globe, Server } from "lucide-react";
@@ -33,8 +34,18 @@ const item = {
 };
 
 export default function HeroSection() {
+  const { t, i18n } = useTranslation();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogType, setDialogType] = useState<"trial" | "demo">("trial");
+
+  const trustBadges = [
+    { icon: CheckCircle, label: t("hero.badges.zatca") },
+    { icon: Shield, label: t("hero.badges.iso") },
+    { icon: Globe, label: t("hero.badges.businesses") },
+    { icon: Server, label: t("hero.badges.cloud") },
+  ];
+
+  const isRTL = i18n.language === 'ar';
 
   const openDialog = async (type: "trial" | "demo") => {
     if (type === "demo") {
@@ -88,7 +99,7 @@ export default function HeroSection() {
             <motion.div variants={item}>
               <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-500/20 border border-blue-400/30 text-blue-100 text-xs font-body font-semibold tracking-wide uppercase mb-6 shadow-[0_0_15px_rgba(59,130,246,0.15)]">
                 <CheckCircle className="w-3.5 h-3.5 text-blue-300" />
-                ZATCA Phase 2 Compliant
+                {t("hero.badge")}
               </span>
             </motion.div>
 
@@ -96,18 +107,17 @@ export default function HeroSection() {
               variants={item}
               className="font-display font-extrabold text-4xl sm:text-5xl lg:text-[3.5rem] xl:text-6xl leading-[1.08] text-white mb-6"
             >
-              The Trading ERP
+              {t("hero.title")}
               <br />
-              Built for{" "}
-              <span className="text-primary">Saudi Business</span>
+              {t("hero.title_sub")}{" "}
+              <span className="text-primary">{t("hero.title_highlight")}</span>
             </motion.h1>
 
             <motion.p
               variants={item}
               className="text-lg text-slate-300 font-body leading-relaxed mb-8 max-w-md"
             >
-              Manage sales, inventory, procurement, and finance in one powerful platform.
-              Purpose-built for trading companies in the Kingdom.
+              {t("hero.description")}
             </motion.p>
 
             <motion.div variants={item} className="flex flex-wrap gap-3 mb-10">
@@ -116,8 +126,8 @@ export default function HeroSection() {
                 className="bg-primary hover:bg-primary-light text-white font-body font-semibold text-base px-7 h-12 shadow-[0_4px_20px_var(--color-primary)/0.35] hover:shadow-[0_4px_24px_var(--color-primary)/0.5] transition-all"
                 onClick={() => openDialog("trial")}
               >
-                Start Free Trial
-                <ArrowRight className="w-4 h-4 ml-2" />
+                {t("hero.trial_btn")}
+                <ArrowRight className={`w-4 h-4 ${isRTL ? 'mr-2 rotate-180' : 'ml-2'}`} />
               </Button>
               <Button
                 size="lg"
@@ -125,7 +135,7 @@ export default function HeroSection() {
                 className="border-white/20 text-white hover:bg-white/10 font-body font-semibold text-base px-7 h-12 bg-transparent"
                 onClick={() => openDialog("demo")}
               >
-                Schedule Demo
+                {t("hero.demo_btn")}
               </Button>
             </motion.div>
 
@@ -147,7 +157,7 @@ export default function HeroSection() {
 
           {/* Right — Dashboard Mockup */}
           <motion.div
-            initial={{ opacity: 0, x: 60, rotateY: -5 }}
+            initial={{ opacity: 0, x: isRTL ? -60 : 60, rotateY: isRTL ? 5 : -5 }}
             animate={{ opacity: 1, x: 0, rotateY: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
             className="relative hidden lg:block"
@@ -175,12 +185,12 @@ export default function HeroSection() {
       <LeadCaptureDialog
         open={dialogOpen}
         onOpenChange={setDialogOpen}
-        title={dialogType === "trial" ? "Start Your Free Trial" : "Schedule a Demo"}
+        title={dialogType === "trial" ? t("dialog.trial_title") : t("dialog.demo_title")}
         description={dialogType === "trial"
-          ? "Enter your details below and our team will get you set up with a free trial."
-          : "Enter your information and we'll contact you to schedule a personalized demo."
+          ? t("dialog.trial_desc")
+          : t("dialog.demo_desc")
         }
-        source={dialogType === "trial" ? "Hero (Free Trial)" : "Hero (Demo)"}
+        source={dialogType === "trial" ? `Hero (Free Trial) [${i18n.language}]` : `Hero (Demo) [${i18n.language}]`}
       />
     </section>
   );

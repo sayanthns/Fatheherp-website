@@ -11,9 +11,13 @@ import { useState, useEffect, useRef } from "react";
 interface Testimonial {
   id: string;
   quote: string;
+  quote_ar: string;
   name: string;
+  name_ar: string;
   role: string;
+  role_ar: string;
   company: string;
+  company_ar: string;
   rating: number;
 }
 
@@ -85,7 +89,7 @@ export default function TestimonialsSection() {
                 </div>
 
                 <p className="text-foreground/80 font-body text-sm leading-relaxed flex-1 mb-6 italic">
-                  "{t.quote}"
+                  "{isRTL ? (t.quote_ar || t.quote) : t.quote}"
                 </p>
 
                 <div className="border-t border-border pt-4">
@@ -97,10 +101,10 @@ export default function TestimonialsSection() {
                     </div>
                     <div>
                       <p className="font-display font-semibold text-sm text-foreground">
-                        {t.name}
+                        {isRTL ? (t.name_ar || t.name) : t.name}
                       </p>
                       <p className="text-muted-foreground font-body text-xs">
-                        {t.role}, {t.company}
+                        {isRTL ? (t.role_ar || t.role) : t.role}, {isRTL ? (t.company_ar || t.company) : t.company}
                       </p>
                     </div>
                   </div>

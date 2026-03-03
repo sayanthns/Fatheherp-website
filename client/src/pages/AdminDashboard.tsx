@@ -57,9 +57,13 @@ interface Lead {
 interface Testimonial {
     id: string;
     quote: string;
+    quote_ar: string;
     name: string;
+    name_ar: string;
     role: string;
+    role_ar: string;
     company: string;
+    company_ar: string;
     rating: number;
 }
 
@@ -785,13 +789,35 @@ export default function AdminDashboard() {
                                     onClick={async () => {
                                         setSavingPricing(true);
                                         try {
+                                            // Process fallbacks for empty Arabic fields
+                                            const processedPricing = { ...pricing! };
+                                            processedPricing.plans = processedPricing.plans.map(p => ({
+                                                ...p,
+                                                name_ar: p.name_ar?.trim() || p.name,
+                                                price_ar: p.price_ar?.trim() || p.price,
+                                                period_ar: p.period_ar?.trim() || p.period,
+                                                description_ar: p.description_ar?.trim() || p.description,
+                                                cta_ar: p.cta_ar?.trim() || p.cta,
+                                                features_ar: p.features.map((f, i) => p.features_ar?.[i]?.trim() || f)
+                                            }));
+                                            processedPricing.comparisonCategories = processedPricing.comparisonCategories.map(c => ({
+                                                ...c,
+                                                name_ar: c.name_ar?.trim() || c.name,
+                                                features: (c.features || []).map(f => ({
+                                                    ...f,
+                                                    name_ar: f.name_ar?.trim() || f.name
+                                                }))
+                                            }));
+
                                             const res = await fetch("/api/pricing", {
                                                 method: "PUT",
                                                 headers: getHeaders(),
-                                                body: JSON.stringify(pricing)
+                                                body: JSON.stringify(processedPricing)
                                             });
-                                            if (res.ok) alert("Pricing saved successfully!");
-                                            else alert("Error saving pricing");
+                                            if (res.ok) {
+                                                alert("Pricing saved successfully!");
+                                                setPricing(processedPricing);
+                                            } else alert("Error saving pricing");
                                         } catch (e) { alert("Network error"); }
                                         finally { setSavingPricing(false); }
                                     }}
@@ -810,13 +836,13 @@ export default function AdminDashboard() {
                                         <div className="space-y-1.5">
                                             <label className="text-xs font-semibold text-slate-700">Display Name (EN)</label>
                                             <input value={plan.name} onChange={e => {
-                                                const newPricing = { ...pricing }; newPricing.plans[planIdx].name = e.target.value; setPricing(newPricing);
+                                                const newPricing = { ...pricing! }; newPricing.plans[planIdx].name = e.target.value; setPricing(newPricing);
                                             }} className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg" />
                                         </div>
                                         <div className="space-y-1.5">
                                             <label className="text-xs font-semibold text-slate-700 font-arabic text-right block">الاسم المعروض (AR)</label>
-                                            <input value={plan.name_ar} dir="rtl" onChange={e => {
-                                                const newPricing = { ...pricing }; newPricing.plans[planIdx].name_ar = e.target.value; setPricing(newPricing);
+                                            <input value={plan.name_ar || ""} dir="rtl" onChange={e => {
+                                                const newPricing = { ...pricing! }; newPricing.plans[planIdx].name_ar = e.target.value; setPricing(newPricing);
                                             }} className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg font-arabic" />
                                         </div>
                                         <div className="grid grid-cols-2 gap-3">
@@ -828,8 +854,8 @@ export default function AdminDashboard() {
                                             </div>
                                             <div className="space-y-1.5">
                                                 <label className="text-xs font-semibold text-slate-700 font-arabic text-right block">عرض السعر (AR)</label>
-                                                <input value={plan.price_ar} dir="rtl" onChange={e => {
-                                                    const newPricing = { ...pricing }; newPricing.plans[planIdx].price_ar = e.target.value; setPricing(newPricing);
+                                                <input value={plan.price_ar || ""} dir="rtl" onChange={e => {
+                                                    const newPricing = { ...pricing! }; newPricing.plans[planIdx].price_ar = e.target.value; setPricing(newPricing);
                                                 }} className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg font-arabic" />
                                             </div>
                                         </div>
@@ -842,8 +868,8 @@ export default function AdminDashboard() {
                                             </div>
                                             <div className="space-y-1.5">
                                                 <label className="text-xs font-semibold text-slate-700 font-arabic text-right block">الفترة (AR)</label>
-                                                <input value={plan.period_ar} dir="rtl" onChange={e => {
-                                                    const newPricing = { ...pricing }; newPricing.plans[planIdx].period_ar = e.target.value; setPricing(newPricing);
+                                                <input value={plan.period_ar || ""} dir="rtl" onChange={e => {
+                                                    const newPricing = { ...pricing! }; newPricing.plans[planIdx].period_ar = e.target.value; setPricing(newPricing);
                                                 }} className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg font-arabic" />
                                             </div>
                                         </div>
@@ -855,8 +881,8 @@ export default function AdminDashboard() {
                                         </div>
                                         <div className="space-y-1.5">
                                             <label className="text-xs font-semibold text-slate-700 font-arabic text-right block">الوصف (AR)</label>
-                                            <textarea value={plan.description_ar} dir="rtl" onChange={e => {
-                                                const newPricing = { ...pricing }; newPricing.plans[planIdx].description_ar = e.target.value; setPricing(newPricing);
+                                            <textarea value={plan.description_ar || ""} dir="rtl" onChange={e => {
+                                                const newPricing = { ...pricing! }; newPricing.plans[planIdx].description_ar = e.target.value; setPricing(newPricing);
                                             }} className="w-full h-16 px-3 py-2 text-sm border border-slate-300 rounded-lg font-arabic" />
                                         </div>
                                         <div className="grid grid-cols-2 gap-3">
@@ -868,8 +894,8 @@ export default function AdminDashboard() {
                                             </div>
                                             <div className="space-y-1.5">
                                                 <label className="text-xs font-semibold text-slate-700 font-arabic text-right block">نص الزر (AR)</label>
-                                                <input value={plan.cta_ar} dir="rtl" onChange={e => {
-                                                    const newPricing = { ...pricing }; newPricing.plans[planIdx].cta_ar = e.target.value; setPricing(newPricing);
+                                                <input value={plan.cta_ar || ""} dir="rtl" onChange={e => {
+                                                    const newPricing = { ...pricing! }; newPricing.plans[planIdx].cta_ar = e.target.value; setPricing(newPricing);
                                                 }} className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg font-arabic" />
                                             </div>
                                         </div>
@@ -892,14 +918,24 @@ export default function AdminDashboard() {
                                                 <div key={featIdx} className="space-y-1 mb-4 p-2 bg-slate-50 rounded-lg border border-slate-100">
                                                     <div className="flex gap-2">
                                                         <input value={feat} placeholder="English" onChange={e => {
-                                                            const newPricing = { ...pricing }; newPricing.plans[planIdx].features[featIdx] = e.target.value; setPricing(newPricing);
+                                                            const newPricing = { ...pricing! };
+                                                            newPricing.plans[planIdx].features = [...newPricing.plans[planIdx].features];
+                                                            newPricing.plans[planIdx].features[featIdx] = e.target.value;
+                                                            setPricing(newPricing);
                                                         }} className="flex-1 px-3 py-1.5 text-xs border border-slate-300 rounded-lg" />
                                                         <button onClick={() => {
-                                                            const newPricing = { ...pricing }; newPricing.plans[planIdx].features.splice(featIdx, 1); newPricing.plans[planIdx].features_ar.splice(featIdx, 1); setPricing(newPricing);
+                                                            const newPricing = { ...pricing! };
+                                                            newPricing.plans[planIdx].features = newPricing.plans[planIdx].features.filter((_, idx) => idx !== featIdx);
+                                                            newPricing.plans[planIdx].features_ar = (newPricing.plans[planIdx].features_ar || []).filter((_, idx) => idx !== featIdx);
+                                                            setPricing(newPricing);
                                                         }} className="p-1 text-red-500 hover:bg-red-50 rounded"><Trash2 className="w-3.5 h-3.5" /></button>
                                                     </div>
-                                                    <input value={plan.features_ar[featIdx] || ""} dir="rtl" placeholder="العربية" onChange={e => {
-                                                        const newPricing = { ...pricing }; newPricing.plans[planIdx].features_ar[featIdx] = e.target.value; setPricing(newPricing);
+                                                    <input value={(plan.features_ar && plan.features_ar[featIdx]) || ""} dir="rtl" placeholder="العربية" onChange={e => {
+                                                        const newPricing = { ...pricing! };
+                                                        if (!newPricing.plans[planIdx].features_ar) newPricing.plans[planIdx].features_ar = [];
+                                                        newPricing.plans[planIdx].features_ar = [...newPricing.plans[planIdx].features_ar];
+                                                        newPricing.plans[planIdx].features_ar[featIdx] = e.target.value;
+                                                        setPricing(newPricing);
                                                     }} className="w-full px-3 py-1.5 text-xs border border-slate-300 rounded-lg font-arabic" />
                                                 </div>
                                             ))}
@@ -922,8 +958,8 @@ export default function AdminDashboard() {
                                                 </div>
                                                 <div className="flex items-center gap-2">
                                                     <span className="text-xs font-bold text-slate-400">AR:</span>
-                                                    <input value={cat.name_ar} dir="rtl" onChange={e => {
-                                                        const newPricing = { ...pricing }; newPricing.comparisonCategories[catIdx].name_ar = e.target.value; setPricing(newPricing);
+                                                    <input value={cat.name_ar || ""} dir="rtl" onChange={e => {
+                                                        const newPricing = { ...pricing! }; newPricing.comparisonCategories[catIdx].name_ar = e.target.value; setPricing(newPricing);
                                                     }} className="font-bold text-slate-800 bg-white border border-slate-200 focus:ring-1 focus:ring-primary/50 rounded px-2 py-1 w-full font-arabic" />
                                                 </div>
                                             </div>
@@ -954,10 +990,10 @@ export default function AdminDashboard() {
                                                         <tr key={featIdx} className="hover:bg-slate-50/50">
                                                             <td className="px-4 py-2 space-y-1">
                                                                 <input value={feat.name} placeholder="English" onChange={e => {
-                                                                    const newPricing = { ...pricing }; newPricing.comparisonCategories[catIdx].features[featIdx].name = e.target.value; setPricing(newPricing);
+                                                                    const newPricing = { ...pricing! }; newPricing.comparisonCategories[catIdx].features[featIdx].name = e.target.value; setPricing(newPricing);
                                                                 }} className="w-full px-2 py-1 border border-slate-200 rounded text-xs focus:border-primary/50 focus:ring-1 focus:ring-primary/50" />
-                                                                <input value={feat.name_ar} dir="rtl" placeholder="العربية" onChange={e => {
-                                                                    const newPricing = { ...pricing }; newPricing.comparisonCategories[catIdx].features[featIdx].name_ar = e.target.value; setPricing(newPricing);
+                                                                <input value={feat.name_ar || ""} dir="rtl" placeholder="العربية" onChange={e => {
+                                                                    const newPricing = { ...pricing! }; newPricing.comparisonCategories[catIdx].features[featIdx].name_ar = e.target.value; setPricing(newPricing);
                                                                 }} className="w-full px-2 py-1 border border-slate-200 rounded text-xs font-arabic focus:border-primary/50 focus:ring-1 focus:ring-primary/50" />
                                                             </td>
                                                             <td className="px-4 py-2 text-center">
@@ -1210,8 +1246,15 @@ export default function AdminDashboard() {
                         setSavingTestimonial(true);
                         const formData = new FormData(e.currentTarget);
                         const payload = {
-                            name: formData.get("name"), role: formData.get("role"), company: formData.get("company"),
-                            quote: formData.get("quote"), rating: Number(formData.get("rating"))
+                            name: formData.get("name"),
+                            name_ar: String(formData.get("name_ar") || "").trim() || formData.get("name"),
+                            role: formData.get("role"),
+                            role_ar: String(formData.get("role_ar") || "").trim() || formData.get("role"),
+                            company: formData.get("company"),
+                            company_ar: String(formData.get("company_ar") || "").trim() || formData.get("company"),
+                            quote: formData.get("quote"),
+                            quote_ar: String(formData.get("quote_ar") || "").trim() || formData.get("quote"),
+                            rating: Number(formData.get("rating"))
                         };
                         try {
                             const method = editingTestimonial ? "PUT" : "POST";
@@ -1221,14 +1264,47 @@ export default function AdminDashboard() {
                         } catch (err) { alert("Error connecting to server."); } finally { setSavingTestimonial(false); }
                     }} className="space-y-4 py-4">
                         <div className="grid grid-cols-2 gap-4">
-                            <div className="space-y-2"><label className="text-sm font-semibold text-slate-700">Client Name</label><input name="name" required defaultValue={editingTestimonial?.name || ""} className="w-full px-3 py-2 border border-slate-300 rounded-md text-sm" /></div>
-                            <div className="space-y-2"><label className="text-sm font-semibold text-slate-700">Rating (1-5)</label><input name="rating" type="number" min="1" max="5" required defaultValue={editingTestimonial?.rating || 5} className="w-full px-3 py-2 border border-slate-300 rounded-md text-sm" /></div>
+                            <div className="space-y-2">
+                                <label className="text-sm font-semibold text-slate-700">Client Name (EN)</label>
+                                <input name="name" required defaultValue={editingTestimonial?.name || ""} className="w-full px-3 py-2 border border-slate-300 rounded-md text-sm" />
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-sm font-semibold text-slate-700 font-arabic text-right block">اسم العميل (AR)</label>
+                                <input name="name_ar" dir="rtl" defaultValue={editingTestimonial?.name_ar || ""} className="w-full px-3 py-2 border border-slate-300 rounded-md text-sm font-arabic" />
+                            </div>
                         </div>
                         <div className="grid grid-cols-2 gap-4">
-                            <div className="space-y-2"><label className="text-sm font-semibold text-slate-700">Job Role</label><input name="role" required defaultValue={editingTestimonial?.role || ""} className="w-full px-3 py-2 border border-slate-300 rounded-md text-sm" /></div>
-                            <div className="space-y-2"><label className="text-sm font-semibold text-slate-700">Company</label><input name="company" required defaultValue={editingTestimonial?.company || ""} className="w-full px-3 py-2 border border-slate-300 rounded-md text-sm" /></div>
+                            <div className="space-y-2">
+                                <label className="text-sm font-semibold text-slate-700">Rating (1-5)</label>
+                                <input name="rating" type="number" min="1" max="5" required defaultValue={editingTestimonial?.rating || 5} className="w-full px-3 py-2 border border-slate-300 rounded-md text-sm" />
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-sm font-semibold text-slate-700">Job Role (EN)</label>
+                                <input name="role" required defaultValue={editingTestimonial?.role || ""} className="w-full px-3 py-2 border border-slate-300 rounded-md text-sm" />
+                            </div>
                         </div>
-                        <div className="space-y-2"><label className="text-sm font-semibold text-slate-700">Testimonial Quote</label><textarea name="quote" required defaultValue={editingTestimonial?.quote || ""} className="w-full h-24 p-3 border border-slate-300 rounded-md text-sm" /></div>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <label className="text-sm font-semibold text-slate-700 font-arabic text-right block">المسمى الوظيفي (AR)</label>
+                                <input name="role_ar" dir="rtl" defaultValue={editingTestimonial?.role_ar || ""} className="w-full px-3 py-2 border border-slate-300 rounded-md text-sm font-arabic" />
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-sm font-semibold text-slate-700">Company (EN)</label>
+                                <input name="company" required defaultValue={editingTestimonial?.company || ""} className="w-full px-3 py-2 border border-slate-300 rounded-md text-sm" />
+                            </div>
+                        </div>
+                        <div className="space-y-2">
+                            <label className="text-sm font-semibold text-slate-700 font-arabic text-right block">الشركة (AR)</label>
+                            <input name="company_ar" dir="rtl" defaultValue={editingTestimonial?.company_ar || ""} className="w-full px-3 py-2 border border-slate-300 rounded-md text-sm font-arabic" />
+                        </div>
+                        <div className="space-y-2">
+                            <label className="text-sm font-semibold text-slate-700">Testimonial Quote (EN)</label>
+                            <textarea name="quote" required defaultValue={editingTestimonial?.quote || ""} className="w-full h-20 p-3 border border-slate-300 rounded-md text-sm" />
+                        </div>
+                        <div className="space-y-2">
+                            <label className="text-sm font-semibold text-slate-700 font-arabic text-right block">الشهادة / الاقتباس (AR)</label>
+                            <textarea name="quote_ar" dir="rtl" defaultValue={editingTestimonial?.quote_ar || ""} className="w-full h-20 p-3 border border-slate-300 rounded-md text-sm font-arabic" />
+                        </div>
                         <div className="flex justify-end pt-4 gap-2">
                             <Button type="button" variant="outline" onClick={() => setTestimonialFormOpen(false)}>Cancel</Button>
                             <Button type="submit" disabled={savingTestimonial} className="bg-primary hover:bg-primary-light">{savingTestimonial ? "Saving..." : "Save Testimonial"}</Button>

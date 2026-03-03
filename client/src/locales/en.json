@@ -253,6 +253,14 @@
         "trial_desc": "Enter your details below and our team will get you set up with a free trial.",
         "demo_desc": "Enter your information and we'll contact you to schedule a personalized demo."
     },
+    "pricing": {
+        "title": "Pricing That Aligns with ",
+        "title_highlight": "Success",
+        "description": "Transparent, scalable plans designed for trading businesses of every size. Start small and grow — no hidden fees, no surprises.",
+        "most_popular": "Most Popular",
+        "comparison_toggle": "Explore Comprehensive Feature Comparison",
+        "comparison_feature": "Feature"
+    },
     "testimonials": {
         "badge": "Testimonials",
         "title": "Trusted by Saudi Traders",

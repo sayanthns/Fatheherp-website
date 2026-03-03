@@ -66,13 +66,11 @@ export default function PricingSection() {
             {t("nav.pricing")}
           </span>
           <h2 className="font-display font-extrabold text-3xl sm:text-4xl lg:text-[2.75rem] text-foreground leading-tight mb-4">
-            {isRTL ? 'خطط بسيطة وشفافة للأسعار' : 'Pricing That Aligns with'}
-            <br />
-            {isRTL ? '' : 'Your '}
-            <span className="text-primary">{isRTL ? '' : 'Success'}</span>
+            {t("pricing.title")}
+            <span className="text-primary">{t("pricing.title_highlight")}</span>
           </h2>
           <p className="text-muted-foreground font-body text-lg leading-relaxed">
-            {isRTL ? 'اختر الباقة المناسبة لاحتياجات عملك' : 'Transparent, scalable plans designed for trading businesses of every size. Start small and grow — no hidden fees, no surprises.'}
+            {t("pricing.description")}
           </p>
         </motion.div>
 
@@ -94,7 +92,7 @@ export default function PricingSection() {
                 <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
                   <span className="inline-flex items-center gap-1.5 px-4 py-1 rounded-full bg-primary text-white text-xs font-body font-semibold shadow-lg shadow-primary/30">
                     <Star className="w-3 h-3 fill-current" />
-                    {isRTL ? 'الأكثر شعبية' : 'Most Popular'}
+                    {t("pricing.most_popular")}
                   </span>
                 </div>
               )}
@@ -167,7 +165,7 @@ export default function PricingSection() {
             onClick={() => setShowComparison(!showComparison)}
             className="w-full flex items-center justify-between px-6 py-4 bg-card border border-border rounded-xl hover:shadow-sm transition-shadow font-body font-medium text-foreground"
           >
-            <span>{isRTL ? 'استكشف مقارنة الميزات الشاملة' : 'Explore Comprehensive Feature Comparison'}</span>
+            <span>{t("pricing.comparison_toggle")}</span>
             {showComparison ? (
               <ChevronUp className="w-5 h-5 text-muted-foreground" />
             ) : (
@@ -186,7 +184,7 @@ export default function PricingSection() {
                   <thead>
                     <tr className="border-b border-border">
                       <th className="text-left px-6 py-4 font-display font-bold text-foreground w-[40%]">
-                        {isRTL ? 'الميزة' : 'Feature'}
+                        {t("pricing.comparison_feature")}
                       </th>
                       <th className="text-center px-4 py-4 font-display font-bold text-foreground">
                         {isRTL ? 'المبتدئ' : 'Starter'}

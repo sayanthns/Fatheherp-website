@@ -214,7 +214,7 @@ export default function PricingSection() {
                             className="border-b border-border/50 hover:bg-slate-50/30 transition-colors"
                           >
                             <td className="px-6 py-3 font-body text-foreground/80">
-                              {isRTL ? feat.name_ar : feat.name}
+                              {isRTL ? (feat.name_ar || feat.name) : feat.name}
                             </td>
                             <td className="text-center px-4 py-3">
                               {feat.starter ? (

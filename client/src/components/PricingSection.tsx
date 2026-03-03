@@ -78,7 +78,7 @@ export default function PricingSection() {
 
         {/* Pricing Cards */}
         <div className="grid md:grid-cols-3 gap-6 lg:gap-8 max-w-5xl mx-auto mb-12">
-          {pricing.plans.map((plan: any, i: number) => (
+          {(pricing?.plans || []).map((plan: any, i: number) => (
             <motion.div
               key={plan.name}
               initial={{ opacity: 0, y: 24 }}
@@ -132,7 +132,7 @@ export default function PricingSection() {
               </div>
 
               <ul className="space-y-3 mb-8 flex-1">
-                {(isRTL ? plan.features_ar : plan.features).map((feat: string) => (
+                {(isRTL ? (plan.features_ar || []) : (plan.features || [])).map((feat: string) => (
                   <li key={feat} className="flex items-start gap-2.5">
                     <Check
                       className={`w-4 h-4 mt-0.5 shrink-0 ${plan.popular ? "text-primary-light" : "text-primary"
@@ -200,17 +200,17 @@ export default function PricingSection() {
                     </tr>
                   </thead>
                   <tbody>
-                    {pricing.comparisonCategories.map((cat: any) => (
+                    {(pricing?.comparisonCategories || []).map((cat: any) => (
                       <>
                         <tr key={cat.name} className="bg-slate-50/50">
                           <td
                             colSpan={4}
                             className="px-6 py-3 font-display font-semibold text-foreground text-xs uppercase tracking-wider"
                           >
-                            {isRTL ? cat.name_ar : cat.name}
+                            {isRTL ? (cat.name_ar || cat.name) : cat.name}
                           </td>
                         </tr>
-                        {cat.features.map((feat: any) => (
+                        {(cat.features || []).map((feat: any) => (
                           <tr
                             key={feat.name}
                             className="border-b border-border/50 hover:bg-slate-50/30 transition-colors"

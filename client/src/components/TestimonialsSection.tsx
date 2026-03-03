@@ -64,7 +64,7 @@ export default function TestimonialsSection() {
             className="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-8 hide-scrollbar"
             style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
           >
-            {testimonials.map((t, i) => (
+            {(testimonials || []).map((t, i) => (
               <motion.div
                 key={t.id || i}
                 initial={{ opacity: 0, y: 24 }}

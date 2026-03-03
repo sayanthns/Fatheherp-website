@@ -32,6 +32,111 @@
       "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36",
       "source": "twitter",
       "campaign": "winter25"
+    },
+    {
+      "date": "2026-03-02T12:29:00.562Z",
+      "path": "/",
+      "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36",
+      "source": null,
+      "campaign": null
+    },
+    {
+      "date": "2026-03-02T12:29:37.103Z",
+      "path": "/",
+      "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36",
+      "source": null,
+      "campaign": null
+    },
+    {
+      "date": "2026-03-02T12:30:45.834Z",
+      "path": "/",
+      "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36",
+      "source": null,
+      "campaign": null
+    },
+    {
+      "date": "2026-03-02T12:31:50.084Z",
+      "path": "/",
+      "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36",
+      "source": null,
+      "campaign": null
+    },
+    {
+      "date": "2026-03-03T10:09:29.387Z",
+      "path": "/",
+      "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36",
+      "source": null,
+      "campaign": null
+    },
+    {
+      "date": "2026-03-03T10:11:45.309Z",
+      "path": "/about",
+      "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/1.1.4498 Chrome/144.0.7559.173 Electron/40.4.1 Safari/537.36",
+      "source": null,
+      "campaign": null
+    },
+    {
+      "date": "2026-03-03T10:12:06.968Z",
+      "path": "/about",
+      "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/1.1.4498 Chrome/144.0.7559.173 Electron/40.4.1 Safari/537.36",
+      "source": null,
+      "campaign": null
+    },
+    {
+      "date": "2026-03-03T10:14:25.586Z",
+      "path": "/about",
+      "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Claude/1.1.4498 Chrome/144.0.7559.173 Electron/40.4.1 Safari/537.36",
+      "source": null,
+      "campaign": null
+    },
+    {
+      "date": "2026-03-03T10:16:44.985Z",
+      "path": "/",
+      "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36",
+      "source": null,
+      "campaign": null
+    },
+    {
+      "date": "2026-03-03T10:17:00.698Z",
+      "path": "/",
+      "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36",
+      "source": null,
+      "campaign": null
+    },
+    {
+      "date": "2026-03-03T10:28:46.907Z",
+      "path": "/",
+      "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36",
+      "source": null,
+      "campaign": null
+    },
+    {
+      "date": "2026-03-03T10:28:49.804Z",
+      "path": "/",
+      "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36",
+      "source": null,
+      "campaign": null
+    },
+    {
+      "date": "2026-03-03T10:29:28.033Z",
+      "path": "/",
+      "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36",
+      "source": null,
+      "campaign": null
+    },
+    {
+      "date": "2026-03-03T10:47:02.601Z",
+      "path": "/crm",
+      "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36",
+      "source": null,
+      "campaign": null
+    },
+    {
+      "date": "2026-03-03T10:47:09.375Z",
+      "path": "/",
+      "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36",
+      "source": null,
+      "campaign": null
     }
   ]
 }

@@ -804,7 +804,7 @@ export default function AdminDashboard() {
 
                             <h3 className="text-lg font-bold text-slate-800 mb-2 mt-8">Main Pricing Tiers (3 Fixed)</h3>
                             <div className="grid lg:grid-cols-3 gap-6">
-                                {pricing.plans.map((plan, planIdx) => (
+                                {(pricing?.plans || []).map((plan, planIdx) => (
                                     <div key={planIdx} className="bg-white p-6 rounded-xl shadow-sm border border-slate-200 space-y-4">
                                         <div className="font-bold text-lg border-b pb-2">{plan.name} Tier</div>
                                         <div className="space-y-1.5">
@@ -881,9 +881,14 @@ export default function AdminDashboard() {
                                         </div>
                                         <div className="space-y-1.5 pt-2 border-t mt-4">
                                             <label className="text-xs font-semibold text-slate-700 flex justify-between mt-2">Highlight Features <button onClick={() => {
-                                                const newPricing = { ...pricing }; newPricing.plans[planIdx].features.push("New Feature"); newPricing.plans[planIdx].features_ar.push("ميزة جديدة"); setPricing(newPricing);
+                                                const newPricing = { ...pricing! };
+                                                newPricing.plans[planIdx].features = newPricing.plans[planIdx].features || [];
+                                                newPricing.plans[planIdx].features_ar = newPricing.plans[planIdx].features_ar || [];
+                                                newPricing.plans[planIdx].features.push("New Feature");
+                                                newPricing.plans[planIdx].features_ar.push("ميزة جديدة");
+                                                setPricing(newPricing);
                                             }} className="text-blue-600 hover:text-blue-800 bg-blue-50 px-2 py-0.5 rounded">+ Add</button></label>
-                                            {plan.features.map((feat, featIdx) => (
+                                            {(plan.features || []).map((feat, featIdx) => (
                                                 <div key={featIdx} className="space-y-1 mb-4 p-2 bg-slate-50 rounded-lg border border-slate-100">
                                                     <div className="flex gap-2">
                                                         <input value={feat} placeholder="English" onChange={e => {
@@ -905,7 +910,7 @@ export default function AdminDashboard() {
 
                             <h3 className="text-lg font-bold text-slate-800 mb-2 mt-12">Comprehensive Feature Comparison</h3>
                             <div className="space-y-6">
-                                {pricing.comparisonCategories.map((cat, catIdx) => (
+                                {(pricing?.comparisonCategories || []).map((cat, catIdx) => (
                                     <div key={catIdx} className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
                                         <div className="bg-slate-50 border-b border-slate-200 p-4 flex justify-between items-center shrink-0">
                                             <div className="flex flex-col gap-2 w-3/4">
@@ -945,7 +950,7 @@ export default function AdminDashboard() {
                                                     </tr>
                                                 </thead>
                                                 <tbody className="divide-y divide-slate-100">
-                                                    {cat.features.map((feat, featIdx) => (
+                                                    {(cat.features || []).map((feat, featIdx) => (
                                                         <tr key={featIdx} className="hover:bg-slate-50/50">
                                                             <td className="px-4 py-2 space-y-1">
                                                                 <input value={feat.name} placeholder="English" onChange={e => {

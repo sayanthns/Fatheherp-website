@@ -1,0 +1,11 @@
+FROM node:20-alpine AS build
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --legacy-peer-deps
+COPY . .
+ENV VITE_FRAPPE_URL=https://office.enfonoerp.com
+RUN npx vite build --base /
+
+FROM caddy:2-alpine
+COPY --from=build /app/fateh_website/fateh_website/public/fateh /srv
+COPY Caddyfile /etc/caddy/Caddyfile

@@ -8,6 +8,7 @@ import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Check, X, ChevronDown, ChevronUp, Star } from "lucide-react";
+import { frappeApi } from "@/lib/frappe-api";
 import { LeadCaptureDialog } from "@/components/LeadCaptureDialog";
 
 export default function PricingSection() {
@@ -20,8 +21,7 @@ export default function PricingSection() {
   const [pricing, setPricing] = useState<any>(null);
 
   useEffect(() => {
-    fetch("/api/pricing")
-      .then(res => res.json())
+    frappeApi.getPricing()
       .then(data => {
         if (data.success && data.pricing) {
           setPricing(data.pricing);

@@ -9,6 +9,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, ArrowRight, Shield, Globe, Server } from "lucide-react";
 import { LeadCaptureDialog } from "@/components/LeadCaptureDialog";
+import { frappeApi } from "@/lib/frappe-api";
 
 const HERO_BG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663243613237/ZUJaVg8WakRBNHRrCPTKin/fateh-hero-bg-3DcCFadWtBHB98iJZD65zp.webp";
 const DASHBOARD_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663243613237/ZUJaVg8WakRBNHRrCPTKin/fateh-dashboard-TFt7bikrqWFZE8j9swnDzY.webp";
@@ -50,8 +51,7 @@ export default function HeroSection() {
   const openDialog = async (type: "trial" | "demo") => {
     if (type === "demo") {
       try {
-        const res = await fetch("/api/settings");
-        const data = await res.json();
+        const data = await frappeApi.getSettings();
         if (data.success && data.settings?.calendlyUrl) {
           window.open(data.settings.calendlyUrl, "_blank");
           return;

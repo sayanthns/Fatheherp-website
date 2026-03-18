@@ -3,6 +3,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { frappeApi } from "@/lib/frappe-api";
 
 interface LeadCaptureDialogProps {
     open: boolean;
@@ -39,10 +40,12 @@ export function LeadCaptureDialog({
                 if (adCampaign) finalSource += ` [${adCampaign}]`;
             }
 
-            await fetch("/api/leads", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ ...formData, source: finalSource }),
+            await frappeApi.submitLead({
+                lead_name: formData.name,
+                business_name: formData.businessName,
+                phone_number: formData.phoneNumber,
+                location: formData.location,
+                source: finalSource,
             });
         } catch (error) {
             console.error("Failed to submit lead", error);

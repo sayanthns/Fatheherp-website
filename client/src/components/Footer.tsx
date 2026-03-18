@@ -55,7 +55,7 @@ export default function Footer() {
             <div className="flex items-center gap-2.5 mb-4">
               <div className="bg-white/90 p-1 rounded-lg flex items-center justify-center overflow-hidden">
                 <img
-                  src="/logo.png"
+                  src="/assets/fateh_website/fateh/logo.png"
                   alt="Fateh ERP Logo"
                   className="h-8 w-auto object-contain"
                   onError={(e) => {

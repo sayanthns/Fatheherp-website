@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Calendar, MessageCircle } from "lucide-react";
 import { toast } from "sonner";
+import { frappeApi } from "@/lib/frappe-api";
 
 export default function HelpBanner() {
   const { t, i18n } = useTranslation();
@@ -34,8 +35,7 @@ export default function HelpBanner() {
                   className="bg-primary hover:bg-primary-light text-white font-body font-semibold shadow-lg shadow-primary/20"
                   onClick={async () => {
                     try {
-                      const res = await fetch("/api/settings");
-                      const data = await res.json();
+                      const data = await frappeApi.getSettings();
                       if (data.success && data.settings?.calendlyUrl) {
                         window.open(data.settings.calendlyUrl, "_blank");
                       } else {

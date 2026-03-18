@@ -8,6 +8,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Phone, Mail, MapPin, Calendar, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { frappeApi } from "@/lib/frappe-api";
 
 export default function CTASection() {
   const { t, i18n } = useTranslation();
@@ -34,16 +35,13 @@ export default function CTASection() {
         if (adCampaign) finalSource += ` [${adCampaign}]`;
       }
 
-      await fetch("/api/leads", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: formData.name,
-          businessName: formData.businessName,
-          phoneNumber: formData.phone,
-          source: finalSource,
-          location: formData.message
-        }),
+      await frappeApi.submitLead({
+        lead_name: formData.name,
+        business_name: formData.businessName,
+        phone_number: formData.phone,
+        location: formData.message,
+        email: formData.email,
+        source: finalSource,
       });
       toast.success(t("cta.form.success"));
       setFormData({ name: "", businessName: "", email: "", phone: "", message: "" });

@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { LeadCaptureDialog } from "@/components/LeadCaptureDialog";
+import { frappeApi } from "@/lib/frappe-api";
 
 const getNavLinks = (t: any) => [
   { label: t("nav.features"), href: "#features" },
@@ -58,8 +59,7 @@ export default function Navbar() {
     setMobileOpen(false);
     if (type === "demo") {
       try {
-        const res = await fetch("/api/settings");
-        const data = await res.json();
+        const data = await frappeApi.getSettings();
         if (data.success && data.settings?.calendlyUrl) {
           window.open(data.settings.calendlyUrl, "_blank");
           return;
@@ -88,7 +88,7 @@ export default function Navbar() {
         >
           <div className="flex items-center justify-center overflow-hidden">
             <img
-              src="/logo.png"
+              src="/assets/fateh_website/fateh/logo.png"
               alt="Fateh ERP Logo"
               className="h-9 w-auto object-contain"
               onError={(e) => {

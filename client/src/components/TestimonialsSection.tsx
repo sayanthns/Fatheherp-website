@@ -5,6 +5,7 @@
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import { Star, Quote } from "lucide-react";
+import { frappeApi } from "@/lib/frappe-api";
 
 import { useState, useEffect, useRef } from "react";
 
@@ -28,8 +29,7 @@ export default function TestimonialsSection() {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    fetch("/api/testimonials")
-      .then(res => res.json())
+    frappeApi.getTestimonials()
       .then(data => {
         if (data.success) {
           setTestimonials(data.testimonials);

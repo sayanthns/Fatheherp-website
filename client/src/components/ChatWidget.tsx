@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MessageCircle, X, Send, User, Bot, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { frappeApi } from "@/lib/frappe-api";
 
 interface Message {
     id: string;
@@ -80,16 +81,12 @@ export default function ChatWidget() {
                 }
 
                 // Send to backend
-                fetch("/api/leads", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        name: data.name,
-                        businessName: data.businessName,
-                        phoneNumber: data.phone,
-                        location: data.location,
-                        source: finalSource
-                    }),
+                frappeApi.submitLead({
+                    lead_name: data.name,
+                    business_name: data.businessName,
+                    phone_number: data.phone,
+                    location: data.location,
+                    source: finalSource,
                 }).catch(err => console.error("Failed to send chat lead", err));
             }
 

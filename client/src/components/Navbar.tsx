@@ -88,7 +88,7 @@ export default function Navbar() {
         >
           <div className="flex items-center justify-center overflow-hidden">
             <img
-              src="/assets/fateh_website/fateh/logo.png"
+              src={`${import.meta.env.BASE_URL}logo.png`}
               alt="Fateh ERP Logo"
               className="h-9 w-auto object-contain"
               onError={(e) => {

@@ -34,17 +34,20 @@ Two marketing websites (fateherp.com + enfono.com) with a shared Frappe v15 back
 
 ## Servers
 
-### VPS — Static Website Hosting
-- **IP**: `156.67.105.6`
-- **SSH**: `root` / `enfono123`
+### VPS — Static Website Hosting (enfono.com + fateherp.com)
+- **IP**: `207.180.209.80`
+- **SSH**: `root` / `30T7mURo5Qf`
 - **Web server**: Caddy (systemd)
 - **Caddyfile**: `/etc/caddy/Caddyfile`
 - **Document roots**:
-  - `/var/www/enfono/` — enfono.com build
-  - `/var/www/fateh/` — fateherp.com build
+  - `/srv/enfono/` — enfono.com build
+  - `/srv/fateh/` — fateherp.com build
+- **Commands**:
+  - Restart: `systemctl restart caddy`
+  - Logs: `journalctl -u caddy -f`
 
-### Frappe Server — Backend API + ERP
-- **IP**: `156.67.105.6` (same server)
+### Frappe Server — Backend API + ERP (office.enfonoerp.com)
+- **IP**: `156.67.105.6`
 - **SSH**: `root` / `enfono123`, then `su - v15`
 - **Bench**: `/home/v15/frappe-bench/`
 - **Site**: `enfono-office-new` (office.enfonoerp.com)
@@ -54,9 +57,9 @@ Two marketing websites (fateherp.com + enfono.com) with a shared Frappe v15 back
 - **Other sites on this server**: `katcherp`, `spice`, `office` — DO NOT TOUCH
 
 ### DNS
-- `enfono.com` → 156.67.105.6
-- `fateherp.com` → 156.67.105.6
-- `office.enfonoerp.com` → 156.67.105.6 (Frappe)
+- `enfono.com` → 207.180.209.80 (Caddy VPS — static frontend)
+- `fateherp.com` → 207.180.209.80 (Caddy VPS — static frontend)
+- `office.enfonoerp.com` → 156.67.105.6 (Frappe backend)
 
 ## Local Development Paths
 
@@ -151,14 +154,14 @@ fateh_website/
 ```bash
 cd ~/Documents/Fateh-website-claude-frappe/client
 npm run build
-sshpass -p 'enfono123' scp -r dist/* root@156.67.105.6:/var/www/fateh/
+sshpass -p '30T7mURo5Qf' scp -r dist/* root@207.180.209.80:/srv/fateh/
 ```
 
 ### Deploy Enfono Frontend
 ```bash
 cd ~/Documents/enfono-website-v2
 npm run build
-sshpass -p 'enfono123' scp -r build/* root@156.67.105.6:/var/www/enfono/
+sshpass -p '30T7mURo5Qf' scp -r build/* root@207.180.209.80:/srv/enfono/
 ```
 
 ### Deploy Frappe App Changes

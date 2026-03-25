@@ -1,5 +1,25 @@
 # Fateh ERP & Enfono — Project Guide
 
+> **READ `skills/` BEFORE ANY OPERATION.** These files contain critical safety rules, architecture details, and troubleshooting patterns that prevent production incidents.
+
+## Top 5 Rules (Prevent Most Common Issues)
+
+1. **NEVER run `bench migrate` without `--site enfono-office-new`** — Other sites (`katcherp`, `spice`, `office`) are client production ERPs. Migrating all sites can corrupt them.
+2. **Deploy frontends to 207.180.209.80, backend to 156.67.105.6** — Mixing these up means files go to the wrong server and sites break.
+3. **Always include `try_files {path} /index.html` in Caddy config** — Without this, SPA client-side routes return 404.
+4. **Use `clean_json_string()` when reading JSON from Frappe Password fields** — Frappe strips braces and adds non-breaking spaces, breaking JSON parsing.
+5. **Workspace Number Cards go in child tables, not content JSON** — Frappe v15 renders from `ws.number_cards` and `ws.charts` child tables, not the `content` field.
+
+## Skill Index
+
+| Skill | Path | What It Covers |
+|-------|------|---------------|
+| Safety | `skills/safety/SKILL.md` | Hard rules, decision matrix, pre-deploy checklists |
+| Architecture | `skills/architecture/SKILL.md` | System diagram, all APIs, doctypes, credentials locations |
+| Operations | `skills/operations/SKILL.md` | Build, deploy, rollback, VPS recovery, logs, common workflows |
+| Troubleshooting | `skills/troubleshooting/SKILL.md` | 12 bug patterns with symptoms, causes, diagnosis, and fixes |
+| Session Logs | `skills/session-logs/` | Chronological record of issues, decisions, and changes |
+
 ## Project Overview
 
 Two marketing websites (fateherp.com + enfono.com) with a shared Frappe v15 backend for CMS, lead management, analytics, and AI chatbot.
@@ -36,7 +56,7 @@ Two marketing websites (fateherp.com + enfono.com) with a shared Frappe v15 back
 
 ### VPS — Static Website Hosting (enfono.com + fateherp.com)
 - **IP**: `207.180.209.80`
-- **SSH**: `root` / `30T7mURo5Qf`
+- **SSH**: `root` / `enfono@123`
 - **Web server**: Caddy (systemd)
 - **Caddyfile**: `/etc/caddy/Caddyfile`
 - **Document roots**:
@@ -154,14 +174,14 @@ fateh_website/
 ```bash
 cd ~/Documents/Fateh-website-claude-frappe/client
 npm run build
-sshpass -p '30T7mURo5Qf' scp -r dist/* root@207.180.209.80:/srv/fateh/
+sshpass -p 'enfono@123' scp -r dist/* root@207.180.209.80:/srv/fateh/
 ```
 
 ### Deploy Enfono Frontend
 ```bash
 cd ~/Documents/enfono-website-v2
 npm run build
-sshpass -p '30T7mURo5Qf' scp -r build/* root@207.180.209.80:/srv/enfono/
+sshpass -p 'enfono@123' scp -r build/* root@207.180.209.80:/srv/enfono/
 ```
 
 ### Deploy Frappe App Changes
